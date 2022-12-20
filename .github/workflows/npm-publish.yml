@@ -30,8 +30,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
+          echo " - [npmjs](https://www.npmjs.com/package/erdjs-vue)" >> notes.txt
+          echo " - [CHANGELOG](https://github.com/gochargetech/erdjs-vue/blob/production/CHANGELOG.md)" >> notes.txt
+          echo "" >> notes.txt
           RELEASE_TAG=v$(node -p "require('./package.json').version")
-          gh release create $RELEASE_TAG --target=$GITHUB_SHA --title="$RELEASE_TAG"
+          gh release create $RELEASE_TAG --target=$GITHUB_SHA --title="$RELEASE_TAG" --generate-notes --notes-file=notes.txt
           
       - run: npm ci
       - run: npm publish --access=public
