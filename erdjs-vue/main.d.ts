@@ -1,0 +1,1 @@
+export { erdjsVue } from './ErdjsVue';
