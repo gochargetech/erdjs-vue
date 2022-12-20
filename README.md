@@ -54,11 +54,20 @@ There is one mandatory component to be loaded:
 <ErdjsFooter />
 ```
 It will display the sign transaction modal and transaction status toasts.
+![Tx Modal](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/modal.png)
+
+![Toast pending tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_pending_tx.png)
+
+![Toast successful tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_successful_tx.png)
+
 
 To display login page, use the following component:
 ```
 <ErdjsLogin />
 ```
+![Login page](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/login.png)
+
+
 
 Transactions can be signed with Global property `$erdjs` as follows:
 ```
