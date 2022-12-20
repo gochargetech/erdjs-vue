@@ -35,7 +35,8 @@ jobs:
           echo "" >> notes.txt
           RELEASE_TAG=v$(node -p "require('./package.json').version")
           gh release create $RELEASE_TAG --target=$GITHUB_SHA --title="$RELEASE_TAG" --generate-notes --notes-file=notes.txt
-          
+      
+      - run: npm install
       - run: npm run build
       - run: npm ci
       - run: npm publish --access=public
