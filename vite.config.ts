@@ -43,7 +43,7 @@ export default defineConfig({
         globals: {
           vue: 'Vue',
           pinia: 'pinia',
-          piniaPluginPersistedstate: 'pinia-plugin-persistedstate',
+          'pinia-plugin-persistedstate': 'piniaPluginPersistedstate',
         }
       }
     }
