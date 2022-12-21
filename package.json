@@ -27,7 +27,7 @@
         "url": "https://gocharge.tech/"
     },
     "type": "module",
-    "types": "erdjs/main.d.ts",
+    "types": "erdjs-vue/main.d.ts",
     "main": "dist/erdjs-vue.js",
     "files": [
         "dist/*"

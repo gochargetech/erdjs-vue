@@ -1,1 +1,1 @@
-export { erdjsVue } from './ErdjsVue';
+declare module 'erdjs-vue';
