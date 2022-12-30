@@ -43,6 +43,7 @@ export function erdjsVue(options: ErdjsVueOptions = defaultOptions): ErdjsVue {
       }
 
       app.config.globalProperties.$erdjs = this;
+      app.provide('erdjs', this)
 
       setTimeout(() => {
         useTransactionsTracker();
