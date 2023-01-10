@@ -20,6 +20,7 @@ import { transactionSender } from 'erdjs-vue/hooks/transactions/transactionsSend
 import { ref, watch } from "vue";
 import { sendSignedTransactions } from 'erdjs-vue/apiCalls/transactions';
 import { useToastsStore } from './store/erdjsToasts';
+import { logout as logoutAction } from 'erdjs-vue/utils/logout'
 
 export interface DappType {
   init: void,
@@ -133,5 +134,12 @@ export default class Dapp {
         errorMessage: ''
       }
     });
+  }
+
+  logout(
+    callbackUrl?: string,
+    onRedirect?: (callbackUrl?: string) => void
+  ) {
+    logoutAction(callbackUrl, onRedirect);
   }
 }

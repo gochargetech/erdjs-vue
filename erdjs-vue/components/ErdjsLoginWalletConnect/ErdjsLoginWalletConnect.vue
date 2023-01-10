@@ -1,15 +1,15 @@
 <template>
-    <div class="erdjs-vue__login-wrappper">
+    <div class="erdjs-vue__login-wrappper d-flex flex-column justify-content-start align-items-center">
         <div class="dapp-login__tab-error" v-if="error">
             {{ error }}
         </div>
         <h4>Maiar Login</h4>
         <div v-if="uriDeepLink">
-            <a :href="uriDeepLink" class="btn btn-primary">Click to login</a>
+            <a :href="uriDeepLink" class="btn btn-primary w-100 mb-4">Click to login</a>
         </div>
         <p class="mb-2">Scan the QR Code with Maiar app</p>
-        <div v-html="qrCodeSvg" v-if="qrCodeSvg" class="wallet-connect-qrcode"></div>
-        <div class="back-button">
+        <div v-html="qrCodeSvg" v-if="qrCodeSvg" class="wallet-connect-qrcode px-4"></div>
+        <div class="back-button my-3">
             <button @click.prevent="$emit('hide-login-tab')" class="btn btn-secondary">Back</button>
         </div>
     </div>
@@ -27,7 +27,8 @@ export default {
     data() {
         return {
             error: null,
-            qrCodeSvg: ''
+            qrCodeSvg: '',
+            uriDeepLink: '',
         }
     },
     props: {
@@ -39,6 +40,7 @@ export default {
         }
     },
     mounted() {
+        this.generateQRCode()
         if (this.selectedMode === LoginMethodsEnum.walletconnect) {
             this.login()
         }
