@@ -2,26 +2,26 @@
     <div>
         <template v-if="!isLoggedIn">
             <template v-if="!loginMethod">
-                <h4>Login</h4>
-                <p class="mb-4">Select login method</p>
+                <slot name="title"><h4>{{ title }}</h4></slot>
+                <slot name="description"><p class="mb-4">{{ description }}</p></slot>
                 
                 <div class="login-method d-flex flex-column flex-md-row justify-content-between flex-wrap">
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().extension)"
                         class="m-2 btn btn-primary"
-                    >Extension</button>
+                    ><slot name="extension">{{ buttonTextExtension }}</slot></button>
                     <!-- <button 
                         @click.prevent="(loginMethod = getLoginMethods().ledger)"
                         class="m-2 btn btn-primary"
-                    >Ledger</button> -->
+                    ><slot name="ledger">{{ buttonTextLedger }}</slot></button> -->
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().wallet)"
                         class="m-2 btn btn-primary"
-                    >Web Wallet</button>
+                    ><slot name="webwallet">{{ buttonTextWebWallet }}</slot></button>
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().walletconnect)"
                         class="m-2 btn btn-primary"
-                    >Maiar</button>
+                    ><slot name="maiarapp">{{ buttonTextMaiarApp }}</slot></button>
                 </div>
             </template>
             <template v-if="loginMethod === getLoginMethods().extension">
@@ -36,10 +36,10 @@
             </template>
         </template>
         <template v-if="isLoggedIn">
-            <p>Your address</p>
-            <div class="mb-4"><a :href="getExplorerUrl" target="_blank">{{ getAddress }}</a></div>
-            <div>
-                <button @click.prevent="logout()" class="btn btn-secondary">Logout</button>
+            <p class="text-center">MultiversX address: <strong>{{ getAddressShort }}</strong></p>
+            <div class="d-flex flex-row justify-content-center">
+                <a :href="getExplorerUrl" target="_blank" class="btn btn-outline-secondary mx-2">View in explorer</a>
+                <button @click.prevent="logout()" class="btn btn-outline-secondary mx-2">Logout</button>
             </div>
         </template>
     </div>
@@ -51,8 +51,6 @@ import { ErdjsLoginExtension } from 'erdjs-vue/components/ErdjsLoginExtension'
 import { ErdjsLoginWebWallet } from 'erdjs-vue/components/ErdjsLoginWebWallet'
 import { ErdjsLoginWalletConnect } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
 import { logout } from 'erdjs-vue/utils/logout'
-import { tryAuthenticateWalletUser } from 'erdjs-vue/hooks/login/useWebWalletLogin'
-import { setExtensionProvider } from 'erdjs-vue/hooks/login/useExtensionLogin'
 import { getExplorerUrl, explorerUrlBuilder } from 'erdjs-vue/utils/transactions/getInterpretedTransaction/helpers';
 
 export default {
@@ -65,6 +63,12 @@ export default {
     data() {
         return {
             loginMethod: '',
+            title: 'MultiversX Login',
+            description: '',
+            buttonTextExtension: 'Extension',
+            buttonTextLedger: 'Ledger',
+            buttonTextWebWallet: 'Web Wallet',
+            buttonTextMaiarApp: 'Maiar App'
         }
     },
     computed: {
@@ -78,7 +82,15 @@ export default {
             const to = explorerUrlBuilder.accountDetails(this.getAddress);
 
             return getExplorerUrl(to);
-        }
+        },
+        getAddressShort() {
+            let address = [
+                this.getAddress.substr(0, 6),
+                this.getAddress.substr(this.getAddress.length - 6, 6),
+            ];
+
+            return address.join('....');
+        },
     },
     methods: {
         getLoginMethods() {
