@@ -89,6 +89,11 @@ Get current network config:
 this.$erdjs.dapp.getNetworkConfig()
 ```
 
+Logout current user/wallet:
+```
+this.$erdjs.dapp.logout()
+```
+
 Get Pinia stores:
 `getDappStore`, `getAccountStore`, `getLoginInfoStore`, `getNotificationsStore`, `getProviderStore`, `getToastsStore`, `getTransactionsStore`, `getTransactionsInfoStore`; Probably you'll not need all of them, but it's good to have them available.
 
@@ -105,4 +110,31 @@ Few examples on how to use Pinia getters to retrieve user/account data:
 - get login method `this.$erdjs.dapp.getLoginInfoStore().getLoginMethod` (extension, walletconnect, etc)
 
 
-To be updated...
+## Login card component
+Display login card components in your app:
+```
+<ErdjsLoginCard class="my-4">
+    <template #title><h4 class="mb-3 text-center text-primary">Web 3.0 Login</h4></template>
+    <template #description><p class="text-center">Sign in with MultiversX wallet.</p></template>
+    <template #extension>Extension</template>
+    <template #ledger>Ledger</template>
+    <template #webwallet>Web Wallet</template>
+    <template #maiarapp>Maiar App</template>
+</ErdjsLoginCard>
+```
+
+
+## Explorer links
+If you need to build explorer links, there are 2 methods available: `explorerUrlBuilder` and `getExplorerLink`
+
+Working example:
+```
+import { explorerUrlBuilder, getExplorerLink } from "erdjs-vue";
+
+const to = explorerUrlBuilder.accountDetails(erdjs.dapp.getAccountStore().address);
+
+return getExplorerLink({
+    explorerAddress: String(erdjs.dapp.getNetworkConfig().explorerAddress),
+    to: to
+});
+```
