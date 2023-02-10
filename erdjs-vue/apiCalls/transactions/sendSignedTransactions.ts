@@ -1,4 +1,4 @@
-import type { Transaction } from '@elrondnetwork/erdjs';
+import type { Transaction } from '@multiversx/sdk-core';
 import axios from 'axios';
 import { useDappStore } from 'erdjs-vue/store/erdjsDapp';
 

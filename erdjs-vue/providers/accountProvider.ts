@@ -1,10 +1,10 @@
 // Last synced with @elrondnetwork/dapp-core version 2.1.16
 // 2022-11-30
 
-import type { WalletProvider } from '@elrondnetwork/erdjs-web-wallet-provider';
-import type { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
-import type { HWProvider } from '@elrondnetwork/erdjs-hw-provider';
-import type { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider';
+import type { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
+import type { ExtensionProvider } from '@multiversx/sdk-extension-provider';
+import type { HWProvider } from '@multiversx/sdk-hw-provider';
+import type { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
 import type { IDappProvider } from 'erdjs-vue/types';
 import { emptyProvider } from 'erdjs-vue/providers/utils';
 // import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';

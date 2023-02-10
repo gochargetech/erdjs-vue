@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { GAS_LIMIT } from 'erdjs-vue/constants/index';
-import type { IGasLimit } from '@elrondnetwork/erdjs';
+import type { IGasLimit } from '@multiversx/sdk-core';
 
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { useDappStore } from 'erdjs-vue/store/erdjsDapp';

@@ -1,4 +1,4 @@
-import type { Transaction } from '@elrondnetwork/erdjs';
+import type { Transaction } from '@multiversx/sdk-core';
 import { getScamAddressData } from 'erdjs-vue/apiCalls/getScamAddressData';
 import { useGetAccountInfo } from 'erdjs-vue/hooks/account/useGetAccountInfo';
 import { useGetAccountProvider } from 'erdjs-vue/hooks/account/useGetAccountProvider';

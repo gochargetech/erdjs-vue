@@ -1,7 +1,7 @@
 import { ref, watch } from 'vue';
-import { Address } from '@elrondnetwork/erdjs';
-import type { Transaction } from '@elrondnetwork/erdjs/out';
-import { Signature } from '@elrondnetwork/erdjs/out/signature';
+import { Address } from '@multiversx/sdk-core';
+import type { Transaction } from '@multiversx/sdk-core/out';
+import { Signature } from '@multiversx/sdk-core/out/signature';
 
 import {
   sendSignedTransactions as defaultSendSignedTxs,
