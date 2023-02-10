@@ -1,5 +1,5 @@
 import { ref, watch } from "vue";
-import { WalletProvider } from '@elrondnetwork/erdjs-web-wallet-provider';
+import { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
 import qs from 'qs';
 import { DAPP_INIT_ROUTE, WALLET_SIGN_SESSION } from 'erdjs-vue/constants/index';
 

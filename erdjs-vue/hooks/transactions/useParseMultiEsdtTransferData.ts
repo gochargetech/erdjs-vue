@@ -1,5 +1,5 @@
 import { ref, watch } from "vue";
-import type { Transaction } from '@elrondnetwork/erdjs';
+import type { Transaction } from '@multiversx/sdk-core';
 import type {
   MultiSignTransactionType,
   TransactionDataTokenType,

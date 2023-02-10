@@ -1,5 +1,5 @@
-import type { Address, Transaction } from '@elrondnetwork/erdjs';
-import type { IPlainTransactionObject } from '@elrondnetwork/erdjs/out/interface';
+import type { Address, Transaction } from '@multiversx/sdk-core';
+import type { IPlainTransactionObject } from '@multiversx/sdk-core/out/interface';
 import type {
   TransactionBatchStatusesEnum,
   TransactionServerStatusesEnum,

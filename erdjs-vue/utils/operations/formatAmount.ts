@@ -1,4 +1,4 @@
-import { TokenPayment } from '@elrondnetwork/erdjs';
+import { TokenPayment } from '@multiversx/sdk-core';
 import BigNumber from 'bignumber.js';
 import { DECIMALS, DIGITS, ZERO } from 'erdjs-vue/constants/index';
 import { stringIsInteger } from 'erdjs-vue/utils/validation/stringIsInteger';

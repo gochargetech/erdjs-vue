@@ -4,7 +4,7 @@ import {
   TransactionOptions,
   TransactionPayload,
   TransactionVersion
-} from '@elrondnetwork/erdjs';
+} from '@multiversx/sdk-core';
 import { GAS_LIMIT, GAS_PRICE, VERSION } from 'erdjs-vue/constants/index';
 import type { RawTransactionType } from 'erdjs-vue/types';
 import { isStringBase64 } from 'erdjs-vue/utils/decoders/base64Utils';

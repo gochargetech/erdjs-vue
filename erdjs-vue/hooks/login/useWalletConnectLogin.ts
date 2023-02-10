@@ -3,7 +3,7 @@ import { setAccountProvider } from 'erdjs-vue/providers/accountProvider';
 import { logout } from 'erdjs-vue/utils/logout';
 import { getIsProviderEqualTo } from 'erdjs-vue/utils/account/getIsProviderEqualTo';
 import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
-import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider';
+import { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
 import type {
   LoginHookGenericStateType,
   OnProviderLoginType

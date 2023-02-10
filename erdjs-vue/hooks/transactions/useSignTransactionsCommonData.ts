@@ -1,4 +1,4 @@
-import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
+import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 
 import { useGetAccountProvider } from 'erdjs-vue/hooks/account/useGetAccountProvider';
 import { useParseSignedTransactions } from 'erdjs-vue/hooks/transactions/useParseSignedTransactions';

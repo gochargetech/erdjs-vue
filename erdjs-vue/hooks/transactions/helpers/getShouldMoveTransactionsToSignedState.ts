@@ -1,4 +1,4 @@
-import type { Transaction } from '@elrondnetwork/erdjs';
+import type { Transaction } from '@multiversx/sdk-core';
 import { useTransactionsStore } from 'erdjs-vue/store/erdjsTransactions';
 
 /**
