@@ -24,6 +24,18 @@ export type OnLoginRedirectType = (
   options?: OnLoginRedirectOptionsType
 ) => void;
 
+export interface NativeAuthConfigType {
+  hostname?: string;
+  apiAddress?: string;
+  expirySeconds?: number;
+  /**
+   * Displays a logout toast warning before token expiration. Defaults to 5 minutes.
+   *
+   * If set to `null`, will not trigger any warning.
+   */
+  tokenExpirationToastWarningSeconds?: number | null;
+}
+
 export interface OnProviderLoginType {
   callbackRoute?: string;
   token?: string;
@@ -31,6 +43,10 @@ export interface OnProviderLoginType {
    * If specified, `onLoginRedirect` will overwrite callbackRoute default navigation
    */
   onLoginRedirect?: OnLoginRedirectType;
+  /**
+   * If set to `true`, will fallback on default configuration
+   */
+  nativeAuth?: NativeAuthConfigType | boolean;
 }
 
 export interface LoginActionPayloadType {

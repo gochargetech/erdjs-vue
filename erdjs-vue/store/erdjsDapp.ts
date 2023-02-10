@@ -15,6 +15,7 @@ export const defaultNetwork: AccountInfoSliceNetworkType = {
   walletConnectBridgeAddress: '',
   walletConnectV2RelayAddress: '',
   walletConnectV2ProjectId: '',
+  walletConnectV2Options: {},
   walletAddress: '',
   apiAddress: '',
   explorerAddress: '',
@@ -68,6 +69,15 @@ export const useDappStore = defineStore('erdjs-dapp', {
     },
     getEgldLabel: (state) => {
       return state.network.egldLabel;
+    },
+    getWalletConnectV2RelaySelector: (state) => {
+      return state.network.walletConnectV2RelayAddress;
+    },
+    getWalletConnectV2ProjectIdSelector: (state) => {
+      return state.network.walletConnectV2ProjectId;
+    },
+    getWalletConnectV2OptionsSelector: (state) => {
+      return state.network.walletConnectV2Options;
     },
   },
   actions: {

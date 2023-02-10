@@ -4,7 +4,7 @@
             {{ error }}
         </div>
         <h4>Maiar Login</h4>
-        <div v-if="uriDeepLink">
+        <div v-if="isMobileDevice && uriDeepLink">
             <a :href="uriDeepLink" class="btn btn-primary w-100 mb-4">Click to login</a>
         </div>
         <p class="mb-2">Scan the QR Code with Maiar app</p>
@@ -29,6 +29,7 @@ export default {
             error: null,
             qrCodeSvg: '',
             uriDeepLink: '',
+            walletConnectUri: '',
         }
     },
     props: {
@@ -52,9 +53,9 @@ export default {
         }
     },
     computed: {
-        walletConnectUri() {
-            return useProviderStore().getWalletConnectUri;
-}
+        isMobileDevice() {
+            return "ontouchstart" in window || "onmsgesturechange" in window;
+        }
     },
     methods: {
         async login() {
