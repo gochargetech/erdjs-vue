@@ -9,7 +9,7 @@ import type { SimpleTransactionType } from 'erdjs-vue/types';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 import { useNotificationsStore } from 'erdjs-vue/store/erdjsNotifications';
-import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 import { useTransactionsStore } from 'erdjs-vue/store/erdjsTransactions';
 import { useTransactionsInfoStore } from 'erdjs-vue/store/erdjsTransactionsInfo';
 import {
@@ -111,7 +111,7 @@ export default class Dapp {
   }
 
   getProviderStore() {
-    return useProviderStore();
+    return useNetworkProviderStore();
   }
 
   getToastsStore() {

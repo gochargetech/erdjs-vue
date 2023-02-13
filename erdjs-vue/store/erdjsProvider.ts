@@ -12,7 +12,7 @@ const initialState: ProviderInitialState = {
   current: emptyProvider
 };
 
-export const useProviderStore = defineStore('erdjs-provider', {
+export const useNetworkProviderStore = defineStore('erdjs-provider', {
   state: () => {
     return { ...initialState }
   },

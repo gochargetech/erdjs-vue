@@ -88,11 +88,17 @@ export const useDappStore = defineStore('erdjs-dapp', {
       const walletConnectV2RelayAddress = getRandomAddressFromNetwork(
         payload.walletConnectV2RelayAddresses
       );
+
+      const walletConnectV2ProjectId = payload.walletConnectV2ProjectId
+        ? payload.walletConnectV2ProjectId
+        : import.meta.env.VITE_VUE_APP_WC_PROJECT_ID;
+
       const network: BaseNetworkType = payload;
 
       this.network = {
         ...network,
         walletConnectBridgeAddress,
+        walletConnectV2ProjectId,
         walletConnectV2RelayAddress
       };
     },

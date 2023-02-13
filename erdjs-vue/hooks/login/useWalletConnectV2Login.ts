@@ -2,7 +2,7 @@ import { useGetAccountProvider } from 'erdjs-vue/hooks/account/useGetAccountProv
 import { setAccountProvider } from 'erdjs-vue/providers/accountProvider';
 import { logout } from 'erdjs-vue/utils/logout';
 import { getIsProviderEqualTo } from 'erdjs-vue/utils/account/getIsProviderEqualTo';
-import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 import type {
   SessionEventTypes,
   PairingTypes
@@ -20,7 +20,7 @@ import { optionalRedirect } from 'erdjs-vue/utils/internal';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 
-import { ref } from 'vue';
+import { ref, watch } from 'vue';
 
 export enum WalletConnectV2Error {
   invalidAddress = 'Invalid address',
@@ -45,12 +45,14 @@ export interface WalletConnectV2LoginHookCustomStateType {
   removeExistingPairing: (topic: string) => Promise<void>;
   walletConnectUri?: string;
   wcPairings?: PairingTypes.Struct[];
+  getWcPairings: () => PairingTypes.Struct[];
 }
 
 export type WalletConnectV2LoginHookReturnType = [
   (loginProvider?: boolean) => void,
   LoginHookGenericStateType,
-  WalletConnectV2LoginHookCustomStateType
+  WalletConnectV2LoginHookCustomStateType,
+  () => string,
 ];
 
 export const useWalletConnectV2Login = ({
@@ -72,7 +74,7 @@ export const useWalletConnectV2Login = ({
 
   const { provider } = useGetAccountProvider();
 
-  useProviderStore().setCurrent(provider);
+  useNetworkProviderStore().setCurrent(provider);
   const walletConnectV2RelayAddress = useDappStore().getWalletConnectV2RelaySelector;
   const walletConnectV2ProjectId = useDappStore().getWalletConnectV2ProjectIdSelector;
   const walletConnectV2Options = useDappStore().getWalletConnectV2OptionsSelector;
@@ -82,6 +84,13 @@ export const useWalletConnectV2Login = ({
   let uriDeepLink = !isLoading.value
     ? `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(wcUri.value)}`
     : '';
+
+  // wcUri watcher
+  watch(wcUri, (newVal) => {
+    isLoading.value = !newVal;
+  }, {
+    immediate: true
+  })
 
   const handleOnLogout = () => {
     logout(logoutRoute);
@@ -94,18 +103,21 @@ export const useWalletConnectV2Login = ({
   const cancelLogin = () => {
     alert('cancel login')
   };
-  const connectExisting = () => {
-    alert('connectExisting')
-  };
-  const removeExistingPairing = () => {
-    alert('removeExistingPairing')
+
+  const getWcUri = () => {
+    return wcUri.value
   };
 
-  async function handleOnLogin() {
+  const getWcPairings = () => {
+    return wcPairings.value
+  };
+
+  const handleOnLogin = async () => {
     try {
-      const currentProvider = useProviderStore().getCurrent;
+      const currentProvider = useNetworkProviderStore().getCurrent;
+      console.log('currentProvider==>>', currentProvider)
       const isLoggedIn = getIsLoggedIn();
-
+      console.log('isLoggedIn==>>', isLoggedIn)
       if (
         isLoggedIn ||
         currentProvider == null ||
@@ -116,6 +128,7 @@ export const useWalletConnectV2Login = ({
 
       // @ts-ignore
       const address = await currentProvider.getAddress();
+      console.log('address address', address);
       if (!address) {
         console.warn('Login cancelled.');
         return;
@@ -163,7 +176,8 @@ export const useWalletConnectV2Login = ({
 
     try {
       // @ts-ignore
-      wcUri.value = await useProviderStore().getCurrent?.login();
+      const res = await useNetworkProviderStore().getCurrent?.connect();
+      wcUri.value = res?.uri ? res.uri : '';
     } catch (err) {
       error.value = WalletConnectV2Error.userRejected;
     }
@@ -174,13 +188,13 @@ export const useWalletConnectV2Login = ({
     }
 
     if (!token) {
-      useProviderStore().setWalletConnectUri(wcUri.value);
+      useNetworkProviderStore().setWalletConnectUri(wcUri.value);
       return;
     }
 
     const wcUriWithToken = `${wcUri.value}&token=${token}`;
 
-    useProviderStore().setWalletConnectUri(wcUriWithToken);
+    useNetworkProviderStore().setWalletConnectUri(wcUriWithToken);
     useLoginInfoStore().setTokenLogin({ loginToken: token });
   }
 
@@ -206,8 +220,7 @@ export const useWalletConnectV2Login = ({
 
 
     await newProvider.init();
-    useProviderStore().setCurrent(newProvider);
-
+    useNetworkProviderStore().setCurrent(newProvider);
     setAccountProvider(newProvider);
     // @ts-ignore
     wcPairings.value = newProvider.pairings;
@@ -216,10 +229,61 @@ export const useWalletConnectV2Login = ({
       await generateWalletConnectUri();
     }
 
-    uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useProviderStore().getWalletConnectUri)}`;
-
+    uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useNetworkProviderStore().getWalletConnectUri)}`;
   }
   const loginFailed = Boolean(error.value);
+
+  const connectExisting = async (pairing: PairingTypes.Struct) => {
+    if (!walletConnectV2RelayAddress || !walletConnectV2ProjectId) {
+      error.value = WalletConnectV2Error.invalidConfig;
+      return;
+    }
+    if (!pairing || !pairing.topic) {
+      error.value = WalletConnectV2Error.invalidTopic;
+      return;
+    }
+
+    try {
+      // @ts-ignore
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      const { approval } = await useNetworkProviderStore().getCurrent?.connect({
+        topic: pairing.topic
+      });
+
+      try {
+        // @ts-ignore
+        await useNetworkProviderStore().getCurrent?.login({ approval });
+      } catch (err) {
+        error.value = WalletConnectV2Error.userRejectedExisting;
+        isLoading.value = true;
+
+        await initiateLogin();
+      }
+    } catch (err) {
+      console.error(WalletConnectV2Error.sessionExpired, err);
+      error.value = WalletConnectV2Error.sessionExpired;
+    } finally {
+      // @ts-ignore
+      wcPairings.value = useNetworkProviderStore().getCurrent?.pairings;
+    }
+  };
+
+  const removeExistingPairing = async (topic: string) => {
+    try {
+      if (topic) {
+        // @ts-ignore
+        await useNetworkProviderStore().getCurrent?.logout({
+          topic
+        });
+      }
+    } catch (err) {
+      console.error(WalletConnectV2Error.errorLogout, err);
+      error.value = WalletConnectV2Error.errorLogout;
+    } finally {
+      // @ts-ignore
+      wcPairings.value = useNetworkProviderStore().getCurrent?.pairings;
+    }
+  };
 
   return [
     initiateLogin,
@@ -227,7 +291,7 @@ export const useWalletConnectV2Login = ({
       loginFailed,
       error: errorMessage,
       isLoading: isLoading.value,
-      isLoggedIn: false
+      isLoggedIn: false,
     },
     {
       uriDeepLink,
@@ -235,7 +299,8 @@ export const useWalletConnectV2Login = ({
       cancelLogin,
       connectExisting,
       removeExistingPairing,
-      wcPairings
-    }
+      getWcPairings
+    },
+    getWcUri
   ];
 };

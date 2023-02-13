@@ -19,7 +19,6 @@
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { useWalletConnectLogin } from 'erdjs-vue/hooks/login/useWalletConnectLogin';
 import QRCode from 'qrcode';
-import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
 import { isMobileEnvironment } from 'erdjs-vue/utils/environment/isMobileEnvironment';
 
 export default {

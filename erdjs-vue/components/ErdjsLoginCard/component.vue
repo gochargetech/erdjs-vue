@@ -22,6 +22,10 @@
                         @click.prevent="(loginMethod = getLoginMethods().walletconnect)"
                         class="m-2 btn btn-primary"
                     ><slot name="maiarapp">{{ buttonTextMaiarApp }}</slot></button>
+                    <button 
+                        @click.prevent="(loginMethod = getLoginMethods().walletconnectv2)"
+                        class="m-2 btn btn-primary"
+                    ><slot name="xportal">{{ buttonTextXPortal }}</slot></button>
                 </div>
             </template>
             <template v-if="loginMethod === getLoginMethods().extension">
@@ -32,6 +36,10 @@
             </template>
             <template v-if="(loginMethod === getLoginMethods().walletconnect)">
                 <ErdjsLoginWalletConnect :selected-mode="loginMethod"
+                    @hide-login-tab="(loginMethod = getLoginMethods().none)" />
+            </template>
+            <template v-if="(loginMethod === getLoginMethods().walletconnectv2)">
+                <ErdjsLoginWalletConnectV2 :selected-mode="loginMethod"
                     @hide-login-tab="(loginMethod = getLoginMethods().none)" />
             </template>
         </template>
@@ -50,6 +58,7 @@ import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { ErdjsLoginExtension } from 'erdjs-vue/components/ErdjsLoginExtension'
 import { ErdjsLoginWebWallet } from 'erdjs-vue/components/ErdjsLoginWebWallet'
 import { ErdjsLoginWalletConnect } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
+import { ErdjsLoginWalletConnectV2 } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
 import { logout } from 'erdjs-vue/utils/logout'
 import { getExplorerUrl, explorerUrlBuilder } from 'erdjs-vue/utils/transactions/getInterpretedTransaction/helpers';
 
@@ -59,6 +68,7 @@ export default {
         ErdjsLoginExtension,
         ErdjsLoginWebWallet,
         ErdjsLoginWalletConnect,
+        ErdjsLoginWalletConnectV2,
     },
     data() {
         return {
@@ -68,7 +78,8 @@ export default {
             buttonTextExtension: 'Extension',
             buttonTextLedger: 'Ledger',
             buttonTextWebWallet: 'Web Wallet',
-            buttonTextMaiarApp: 'Maiar App'
+            buttonTextMaiarApp: 'Maiar App',
+            buttonTextXPortal: 'xPortal App'
         }
     },
     computed: {
