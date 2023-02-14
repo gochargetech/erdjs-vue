@@ -115,9 +115,7 @@ export const useWalletConnectV2Login = ({
   const handleOnLogin = async () => {
     try {
       const currentProvider = useNetworkProviderStore().getCurrent;
-      console.log('currentProvider==>>', currentProvider)
       const isLoggedIn = getIsLoggedIn();
-      console.log('isLoggedIn==>>', isLoggedIn)
       if (
         isLoggedIn ||
         currentProvider == null ||
@@ -128,7 +126,6 @@ export const useWalletConnectV2Login = ({
 
       // @ts-ignore
       const address = await currentProvider.getAddress();
-      console.log('address address', address);
       if (!address) {
         console.warn('Login cancelled.');
         return;
@@ -151,10 +148,10 @@ export const useWalletConnectV2Login = ({
       };
 
       if (hasSignature) {
-        useLoginInfoStore().setWalletConnectLogin(loginData);
+        useLoginInfoStore().setWalletConnectV2Login(loginData);
         useLoginInfoStore().setTokenLoginSignature(signature);
       } else {
-        useLoginInfoStore().setWalletConnectLogin(loginData);
+        useLoginInfoStore().setWalletConnectV2Login(loginData);
       }
 
       optionalRedirect({
@@ -176,8 +173,29 @@ export const useWalletConnectV2Login = ({
 
     try {
       // @ts-ignore
-      const res = await useNetworkProviderStore().getCurrent?.connect();
-      wcUri.value = res?.uri ? res.uri : '';
+      // eslint-disable-next-line no-unsafe-optional-chaining
+      const { uri, approval } = await useNetworkProviderStore().getCurrent?.connect();
+      const hasUri = Boolean(uri);
+
+      if (!hasUri) {
+        return;
+      }
+
+      wcUri.value = uri;
+
+      useNetworkProviderStore().setWalletConnectUri(wcUri.value);
+
+      try {
+        // @ts-ignore
+        // eslint-disable-next-line no-unsafe-optional-chaining
+        await useNetworkProviderStore().getCurrent?.login({ approval, token });
+      } catch (err) {
+        error.value = WalletConnectV2Error.userRejected;
+        isLoading.value = true;
+
+        await initiateLogin();
+      }
+
     } catch (err) {
       error.value = WalletConnectV2Error.userRejected;
     }
@@ -188,7 +206,7 @@ export const useWalletConnectV2Login = ({
     }
 
     if (!token) {
-      useNetworkProviderStore().setWalletConnectUri(wcUri.value);
+
       return;
     }
 
@@ -231,6 +249,7 @@ export const useWalletConnectV2Login = ({
 
     uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useNetworkProviderStore().getWalletConnectUri)}`;
   }
+
   const loginFailed = Boolean(error.value);
 
   const connectExisting = async (pairing: PairingTypes.Struct) => {

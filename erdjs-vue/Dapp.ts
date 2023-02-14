@@ -77,6 +77,7 @@ export default class Dapp {
     })
 
     const loginMethod = useLoginInfoStore().getLoginMethod;
+
     const loginMethodRef = ref(loginMethod);
 
     watch(loginMethodRef, () => {

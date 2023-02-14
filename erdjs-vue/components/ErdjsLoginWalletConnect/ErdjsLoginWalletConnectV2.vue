@@ -4,11 +4,11 @@
             {{ errorMessage }}
         </div>
         <h4>xPortal Login</h4>
-        <template v-if="wcPairings.length">
+
+        <template v-if="activeWcPairings.length">
             <strong class="mb-2">Choose a session:</strong>
-            <div v-for="(pairing, pIndex) of wcPairings" :key="pIndex" class="w-100 mb-2">
+            <div v-for="(pairing, pIndex) of activeWcPairings" :key="pIndex" class="w-100 mb-2">
                 <div v-if="pairing.peerMetadata" 
-                    @click.prevent="pairingSelected(pairing)" 
                     :key="pairing.topic"
                     class="pairing w-100 d-flex flex-row align-items-center p-2 rounded" 
                 >
@@ -25,6 +25,7 @@
                         
                         <span>{{pairing.peerMetadata.url}}</span>
                     
+                        <a href="#" @click.prevent="pairingSelected(pairing)" class="pairing--link" title="Connect pairing"></a>
                         <button class="btn btn-pairing-remove" @click.prevent="pairingRemoved(pairing)">x</button>
                     </div>
                 </div>
@@ -47,6 +48,8 @@ import { LoginMethodsEnum } from 'erdjs-vue/types/index';
 import { useWalletConnectV2Login } from 'erdjs-vue/hooks/login/useWalletConnectV2Login';
 import QRCode from 'qrcode';
 import type { PairingTypes } from '@multiversx/sdk-wallet-connect-provider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { storeToRefs } from 'pinia';
 
 export default defineComponent({
     mounted() { 
@@ -59,20 +62,23 @@ export default defineComponent({
         const errorMessage = ref<string>('');
         const qrCodeSvg = ref<string>('');
         const uriLink = ref('');
-        const wcUri = ref<string>('');
         const topicLoading = ref<string>('');
 
+        const { getWalletConnectUri } = storeToRefs(useNetworkProviderStore());
+
+        watch(getWalletConnectUri, () => {
+            generateQRCode();
+        })
+        
         const [
             onInitiateLogin,
             { error },
             {
                 uriDeepLink,
-                walletConnectUri,
                 getWcPairings,
                 connectExisting,
                 removeExistingPairing,
-            },
-            getWcUri
+            }
         ] = useWalletConnectV2Login({
             logoutRoute: '/login',
             callbackRoute: '/login'
@@ -80,24 +86,21 @@ export default defineComponent({
         if (error) {
             errorMessage.value = error;
         }
-        wcUri.value = walletConnectUri ? walletConnectUri : '';
         uriLink.value = uriDeepLink;
-
+        
         const login = async () => {
-            await onInitiateLogin();
-            wcUri.value = getWcUri();
-            generateQRCode();
+            onInitiateLogin();
         }
 
         const generateQRCode = async () => {
-            const canGenerateQRCode = Boolean(wcUri.value);
+            const canGenerateQRCode = Boolean(getWalletConnectUri.value);
             
             if (!canGenerateQRCode) {
                 return;
             }
 
-            if (wcUri.value) {
-                const svg = await QRCode.toString(wcUri.value, {
+            if (getWalletConnectUri.value) {
+                const svg = await QRCode.toString(getWalletConnectUri.value, {
                     type: 'svg'
                 });
                 if (svg) {
@@ -105,10 +108,6 @@ export default defineComponent({
                 }
             }
         }
-
-        watch([wcUri], () => {
-            generateQRCode();
-        })
 
         const pairingSelected = (pairing: PairingTypes.Struct) => {
             connectExisting(pairing);
@@ -126,7 +125,6 @@ export default defineComponent({
             errorMessage,
             uriLink,
             qrCodeSvg,
-            wcUri,
             getWcPairings,
             pairingSelected,
             pairingRemoved,
@@ -147,6 +145,23 @@ export default defineComponent({
         },
         wcPairings() {
             return this.getWcPairings();
+        },
+        activeWcPairings() {
+            const pairings = this.getWcPairings();
+            const activePairings = pairings?.filter((pairing) => {
+                const hasLaterEntry = pairings.some(
+                    (pairing2) =>
+                        pairing.peerMetadata?.name === pairing2?.peerMetadata?.name &&
+                        pairing.peerMetadata?.url === pairing2?.peerMetadata?.url &&
+                        pairing.expiry < pairing2.expiry
+                );
+
+                return (
+                    Boolean(pairing.active) && pairing.peerMetadata && !hasLaterEntry
+                );
+            }) ?? []
+
+            return activePairings;
         }
     },
 });
@@ -169,9 +184,19 @@ export default defineComponent({
     background-color: var(--bs-gray-200);
 
 }
+.pairing--link {
+    position: absolute;
+    display: block;
+    z-index: 2;
+    width: 100%;
+    height: 100%;
+    left: 0;
+    top: 0;
+}
 .btn-pairing-remove {
     position: absolute;
     right: 1rem;
     top: 1rem;
+    z-index: 3;
 }
 </style>

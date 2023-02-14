@@ -7,7 +7,7 @@ import type { HWProvider } from '@multiversx/sdk-hw-provider';
 import type { WalletConnectProvider, WalletConnectV2Provider } from '@multiversx/sdk-wallet-connect-provider';
 import type { IDappProvider } from 'erdjs-vue/types';
 import { emptyProvider } from 'erdjs-vue/providers/utils';
-// import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 
 export type ProvidersType =
   | IDappProvider
