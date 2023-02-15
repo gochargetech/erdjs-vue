@@ -47,11 +47,11 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { LoginMethodsEnum } from 'erdjs-vue/types/index';
-import { useWalletConnectV2Login } from 'erdjs-vue/hooks/login/useWalletConnectV2Login';
+import { LoginMethodsEnum } from './../../types/index';
+import { useWalletConnectV2Login } from './../../hooks/login/useWalletConnectV2Login';
 import QRCode from 'qrcode';
 import type { PairingTypes } from '@multiversx/sdk-wallet-connect-provider';
-import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from './../../store/erdjsProvider';
 import { storeToRefs } from 'pinia';
 
 export default defineComponent({
@@ -67,8 +67,9 @@ export default defineComponent({
         const uriLink = ref('');
         const topicLoading = ref<string>('');
 
-        const { getWalletConnectUri } = storeToRefs(useNetworkProviderStore());
-
+        const networkProviderStore = useNetworkProviderStore();
+        const { getWalletConnectUri } = storeToRefs(networkProviderStore);
+        
         watch(getWalletConnectUri, () => {
             generateQRCode();
         })
@@ -83,8 +84,7 @@ export default defineComponent({
                 removeExistingPairing,
             }
         ] = useWalletConnectV2Login({
-            logoutRoute: '/login',
-            callbackRoute: '/login'
+            logoutRoute: '/login'
         });
         if (error) {
             errorMessage.value = error;
