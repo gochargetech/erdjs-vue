@@ -1,17 +1,18 @@
 // Last synced with @elrondnetwork/dapp-core version 2.1.16
 // 2022-11-30
 
-import type { SignableMessage, Transaction } from '@elrondnetwork/erdjs';
-import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
-import { HWProvider } from '@elrondnetwork/erdjs-hw-provider';
-import type { IHWElrondApp } from '@elrondnetwork/erdjs-hw-provider/out/interface';
+import type { SignableMessage, Transaction } from '@multiversx/sdk-core';
+import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
+import { HWProvider } from '@multiversx/sdk-hw-provider';
+import type { IHWElrondApp } from '@multiversx/sdk-hw-provider/out/interface';
 
 import type {
   // @ts-ignore
   EngineTypes,
-} from '@elrondnetwork/erdjs-wallet-connect-provider';
-import { WalletConnectProvider } from '@elrondnetwork/erdjs-wallet-connect-provider';
-import { WalletProvider } from '@elrondnetwork/erdjs-web-wallet-provider';
+} from '@multiversx/sdk-wallet-connect-provider';
+import { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
+import { WalletConnectV2Provider } from '@multiversx/sdk-wallet-connect-provider/out/walletConnectV2Provider';
+import { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
 import { LEDGER_CONTRACT_DATA_ENABLED_VALUE } from 'erdjs-vue/constants/index';
 import type { IDappProvider } from 'erdjs-vue/types';
 import { LoginMethodsEnum } from 'erdjs-vue/types/enums.types';
@@ -26,6 +27,8 @@ export const getProviderType = <TProvider extends Object>(
       return LoginMethodsEnum.wallet;
     case WalletConnectProvider:
       return LoginMethodsEnum.walletconnect;
+    case WalletConnectV2Provider:
+      return LoginMethodsEnum.walletconnectv2;
     case HWProvider:
       return LoginMethodsEnum.ledger;
     case ExtensionProvider:

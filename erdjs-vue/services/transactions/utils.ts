@@ -1,4 +1,4 @@
-import type { Transaction } from '@elrondnetwork/erdjs/out';
+import type { Transaction } from '@multiversx/sdk-core/out';
 import BigNumber from 'bignumber.js';
 import { GAS_PER_DATA_BYTE, GAS_PRICE_MODIFIER } from 'erdjs-vue/constants/index';
 import { calculateFeeLimit } from 'erdjs-vue/utils/operations';

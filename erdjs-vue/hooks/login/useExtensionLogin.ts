@@ -1,6 +1,6 @@
 import { SECOND_LOGIN_ATTEMPT_ERROR } from 'erdjs-vue/constants/errorsMessages';
 import { setAccountProvider } from 'erdjs-vue/providers/accountProvider';
-import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
+import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 
 import type {
   InitiateLoginFunctionType,

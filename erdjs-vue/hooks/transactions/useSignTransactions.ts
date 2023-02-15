@@ -1,6 +1,6 @@
-import type { Transaction } from '@elrondnetwork/erdjs';
+import type { Transaction } from '@multiversx/sdk-core';
 
-import { ExtensionProvider } from '@elrondnetwork/erdjs-extension-provider';
+import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 import { ref, watch } from "vue";
 
 import {

@@ -86,6 +86,10 @@ export const useLoginInfoStore = defineStore('erdjs-login-info', {
       this.loginMethod = LoginMethodsEnum.walletconnect;
       this.walletConnectLogin = payload;
     },
+    setWalletConnectV2Login(payload: WalletConnectLoginType) {
+      this.loginMethod = LoginMethodsEnum.walletconnectv2;
+      this.walletConnectLogin = payload;
+    },
     setLedgerLogin(payload: LedgerLoginType) {
       this.loginMethod = LoginMethodsEnum.ledger;
       this.ledgerLogin = payload;
