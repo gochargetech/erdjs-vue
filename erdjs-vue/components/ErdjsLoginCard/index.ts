@@ -1,6 +1,6 @@
 import type { App, Plugin } from 'vue'
 
-import ErdjsLoginCard from './component.vue'
+import ErdjsLoginCard from './ErdjsLoginCard.vue'
 
 export default {
   install(Vue: App) {

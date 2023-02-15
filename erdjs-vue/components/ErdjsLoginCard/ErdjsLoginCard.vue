@@ -5,7 +5,7 @@
                 <slot name="title"><h4>{{ title }}</h4></slot>
                 <slot name="description"><p class="mb-4">{{ description }}</p></slot>
                 
-                <div class="login-method d-flex flex-column flex-md-row justify-content-between flex-wrap">
+                <div class="login-method d-flex flex-column flex-md-row justify-content-center flex-wrap">
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().extension)"
                         class="m-2 btn btn-primary"

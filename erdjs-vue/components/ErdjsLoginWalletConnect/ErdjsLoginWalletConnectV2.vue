@@ -26,13 +26,13 @@
                         <span>{{pairing.peerMetadata.url}}</span>
                     
                         <a href="#" @click.prevent="pairingSelected(pairing)" class="pairing--link" title="Connect pairing"></a>
-                        <button class="btn btn-pairing-remove" @click.prevent="pairingRemoved(pairing)">x</button>
+                        <button class="btn btn-pairing-remove" @click.prevent="pairingRemoved(pairing)">×</button>
                     </div>
                 </div>
             </div>
         </template>
-        <div v-if="isMobileDevice && uriLink">
-            <a :href="uriLink" class="btn btn-primary w-100 mb-4">Click to login</a>
+        <div v-if="isMobileDevice && uriDeepLink">
+            <a :href="uriDeepLink" class="btn btn-primary w-100 mb-4">Click to login</a>
         </div>
         <p class="mb-2">Scan the QR Code with xPortal app</p>
         <div v-html="qrCodeSvg" v-if="qrCodeSvg" class="wallet-connect-qrcode px-4"></div>
@@ -47,12 +47,10 @@
 
 <script lang="ts">
 import { defineComponent, ref, watch } from 'vue';
-import { LoginMethodsEnum } from 'erdjs-vue/types/index';
-import { useWalletConnectV2Login } from 'erdjs-vue/hooks/login/useWalletConnectV2Login';
+import { LoginMethodsEnum } from './../../types/index';
+import { useWalletConnectV2Login } from './../../hooks/login/useWalletConnectV2Login';
 import QRCode from 'qrcode';
 import type { PairingTypes } from '@multiversx/sdk-wallet-connect-provider';
-import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
-import { storeToRefs } from 'pinia';
 
 export default defineComponent({
     mounted() { 
@@ -64,46 +62,42 @@ export default defineComponent({
     setup() {
         const errorMessage = ref<string>('');
         const qrCodeSvg = ref<string>('');
-        const uriLink = ref('');
         const topicLoading = ref<string>('');
 
-        const { getWalletConnectUri } = storeToRefs(useNetworkProviderStore());
-
-        watch(getWalletConnectUri, () => {
-            generateQRCode();
-        })
-        
         const [
             onInitiateLogin,
             { error },
             {
                 uriDeepLink,
+                walletConnectUri,
                 getWcPairings,
                 connectExisting,
                 removeExistingPairing,
-            }
+            },
         ] = useWalletConnectV2Login({
-            logoutRoute: '/login',
-            callbackRoute: '/login'
+            logoutRoute: '/login'
         });
         if (error) {
             errorMessage.value = error;
         }
-        uriLink.value = uriDeepLink;
-        
+
+        watch(walletConnectUri, () => {
+            generateQRCode();
+        });
+
         const login = async () => {
-            onInitiateLogin();
+            await onInitiateLogin();
         }
 
         const generateQRCode = async () => {
-            const canGenerateQRCode = Boolean(getWalletConnectUri.value);
+            const canGenerateQRCode = Boolean(walletConnectUri.value);
             
             if (!canGenerateQRCode) {
                 return;
             }
 
-            if (getWalletConnectUri.value) {
-                const svg = await QRCode.toString(getWalletConnectUri.value, {
+            if (walletConnectUri.value) {
+                const svg = await QRCode.toString(walletConnectUri.value, {
                     type: 'svg'
                 });
                 if (svg) {
@@ -126,21 +120,19 @@ export default defineComponent({
             login,
             generateQRCode,
             errorMessage,
-            uriLink,
             qrCodeSvg,
             getWcPairings,
             pairingSelected,
             pairingRemoved,
             topicLoading,
-            LoginMethodsEnum
+            LoginMethodsEnum,
+            uriDeepLink
         }
     },
     props: {
         selectedMode: {
             type: String,
             default: '',
-            uriDeepLink: '',
-            isMobile: false,
         }
     },
     computed: {

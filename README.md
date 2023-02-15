@@ -35,13 +35,39 @@ const app = createApp(App)
 // Init erdjs-vue.
 const erdjs = erdjsVue({
   loadCss: false,
-  chain: 'devnet'
+  chain: 'devnet',
 });
 app.use(erdjs)
 
 // Mount app.
 app.mount('#app')
 ```
+
+If you're loading `Pinia` before init erdjsVue, then you'll have to pass it as param to make sure it's not loaded again in our plugin:
+```
+import { erdjsVue } from 'erdjs-vue';
+import { createPinia } from 'pinia';
+
+// Create app.
+const app = createApp(App)
+
+// Pinia init.
+const pinia = createPinia();
+pinia.use(piniaPluginPersistedstate);
+app.use(pinia);
+
+// Init erdjs-vue.
+const erdjs = erdjsVue({
+  loadCss: false,
+  chain: 'devnet',
+  piniaInstance: pinia,
+});
+app.use(erdjs)
+
+// Mount app.
+app.mount('#app')
+```
+
 For styling, we've added bootstrap classes in our components. If you want to apply styling, you'll have to import bootstrap in your app. In the main css/scss file:
 ```
 // Add bootstrap to our styles 
@@ -54,18 +80,18 @@ There is one mandatory component to be loaded:
 <ErdjsFooter />
 ```
 It will display the sign transaction modal and transaction status toasts.
-![Tx Modal](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/modal.png)
+![Tx Modal](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/modal.png?raw=true)
 
-![Toast pending tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_pending_tx.png)
+![Toast pending tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_pending_tx.png?raw=true)
 
-![Toast successful tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_successful_tx.png)
+![Toast successful tx](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/toast_successful_tx.png?raw=true)
 
 
 To display login page, use the following component:
 ```
 <ErdjsLogin />
 ```
-![Login page](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/login.png)
+![Login page](https://github.com/gochargetech/erdjs-vue/blob/production/src/assets/screenshots/login.png?raw=true)
 
 
 
