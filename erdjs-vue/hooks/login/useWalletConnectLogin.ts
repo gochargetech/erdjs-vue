@@ -15,13 +15,17 @@ import { optionalRedirect } from 'erdjs-vue/utils/internal';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 
+import { ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import { storeToRefs } from 'pinia';
+
 export interface InitWalletConnectType extends OnProviderLoginType {
   logoutRoute: string;
 }
 
 export interface WalletConnectLoginHookCustomStateType {
   uriDeepLink: string;
-  walletConnectUri?: string;
+  walletConnectUri: Ref<string>;
 }
 
 export type WalletConnectLoginHookReturnType = [
@@ -37,6 +41,18 @@ export const useWalletConnectLogin = ({
   onLoginRedirect
 }: InitWalletConnectType): WalletConnectLoginHookReturnType => {
   let errorMessage = '';
+  const walletConnectUri = ref<string>('');
+
+  const networkProviderStore = useNetworkProviderStore();
+  const { getWalletConnectUri } = storeToRefs(networkProviderStore);
+
+  // getWalletConnectUri watcher. Generate deep link for xPortal app.
+  watch(getWalletConnectUri, (newVal) => {
+    walletConnectUri.value = newVal;
+  }, {
+    immediate: true
+  })
+
   const { provider } = useGetAccountProvider();
 
   useNetworkProviderStore().setCurrent(provider);
@@ -45,12 +61,12 @@ export const useWalletConnectLogin = ({
 
   let heartbeatDisconnectInterval: NodeJS.Timeout;
 
-  const walletConnectUri = useNetworkProviderStore().getWalletConnectUri;
-  const hasWalletConnectUri = Boolean(walletConnectUri);
+  // walletConnectUri.value = useNetworkProviderStore().getWalletConnectUri;
+  const hasWalletConnectUri = Boolean(walletConnectUri.value);
   const isLoading = !hasWalletConnectUri;
 
   let uriDeepLink = hasWalletConnectUri
-    ? `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(walletConnectUri)}`
+    ? `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(walletConnectUri.value)}`
     : '';
 
   const handleOnLogout = () => {
@@ -128,6 +144,8 @@ export const useWalletConnectLogin = ({
 
     // @ts-ignore
     const uri: string = await useNetworkProviderStore().getCurrent?.login();
+    useNetworkProviderStore().setWalletConnectUri(uri);
+
     const hasUri = Boolean(uri);
 
     if (!hasUri) {
@@ -135,7 +153,6 @@ export const useWalletConnectLogin = ({
     }
 
     if (!token) {
-      useNetworkProviderStore().setWalletConnectUri(uri);
       return;
     }
 
@@ -146,7 +163,7 @@ export const useWalletConnectLogin = ({
   }
 
   async function initiateLogin(loginProvider = true) {
-    const shouldGenerateWcUri = loginProvider && !walletConnectUri;
+    const shouldGenerateWcUri = loginProvider && !walletConnectUri.value;
 
     if (
       !walletConnectBridgeAddress ||

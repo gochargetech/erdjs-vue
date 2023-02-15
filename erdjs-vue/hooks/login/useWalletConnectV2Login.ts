@@ -21,6 +21,8 @@ import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 
 import { ref, watch } from 'vue';
+import type { Ref } from 'vue';
+import { storeToRefs } from 'pinia';
 
 export enum WalletConnectV2Error {
   invalidAddress = 'Invalid address',
@@ -39,11 +41,11 @@ export interface InitWalletConnectV2Type extends OnProviderLoginType {
 }
 
 export interface WalletConnectV2LoginHookCustomStateType {
-  uriDeepLink: string;
+  uriDeepLink: Ref<string>;
   cancelLogin: () => void;
   connectExisting: (pairing: PairingTypes.Struct) => Promise<void>;
   removeExistingPairing: (topic: string) => Promise<void>;
-  walletConnectUri?: string;
+  walletConnectUri: Ref<string>;
   wcPairings?: PairingTypes.Struct[];
   getWcPairings: () => PairingTypes.Struct[];
 }
@@ -52,7 +54,6 @@ export type WalletConnectV2LoginHookReturnType = [
   (loginProvider?: boolean) => void,
   LoginHookGenericStateType,
   WalletConnectV2LoginHookCustomStateType,
-  () => string,
 ];
 
 export const useWalletConnectV2Login = ({
@@ -68,6 +69,10 @@ export const useWalletConnectV2Login = ({
   const wcUri = ref<string>('');
   const wcPairings = ref<PairingTypes.Struct[]>([]);
   const error = ref<string>('');
+  const uriDeepLink = ref<string>('');
+
+  const networkProviderStore = useNetworkProviderStore();
+  const { getWalletConnectUri } = storeToRefs(networkProviderStore);
 
   const { provider } = useGetAccountProvider();
 
@@ -78,13 +83,20 @@ export const useWalletConnectV2Login = ({
   const chainId = useDappStore().getChainId;
   const walletConnectDeepLink = useDappStore().getWalletConnectDeepLink;
 
-  let uriDeepLink = !isLoading.value
+  uriDeepLink.value = !isLoading.value
     ? `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(wcUri.value)}`
     : '';
 
   // wcUri watcher
   watch(wcUri, (newVal) => {
     isLoading.value = !newVal;
+  }, {
+    immediate: true
+  })
+
+  // getWalletConnectUri watcher. Generate deep link for xPortal app.
+  watch(getWalletConnectUri, (newVal) => {
+    uriDeepLink.value = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(newVal)}`;
   }, {
     immediate: true
   })
@@ -99,10 +111,6 @@ export const useWalletConnectV2Login = ({
 
   const cancelLogin = () => {
     alert('cancel login')
-  };
-
-  const getWcUri = () => {
-    return wcUri.value
   };
 
   const getWcPairings = () => {
@@ -179,7 +187,6 @@ export const useWalletConnectV2Login = ({
       }
 
       wcUri.value = uri;
-
       useNetworkProviderStore().setWalletConnectUri(wcUri.value);
 
       try {
@@ -196,6 +203,7 @@ export const useWalletConnectV2Login = ({
     } catch (err) {
       error.value = WalletConnectV2Error.userRejected;
     }
+
     const hasUri = Boolean(wcUri.value);
 
     if (!hasUri) {
@@ -203,14 +211,13 @@ export const useWalletConnectV2Login = ({
     }
 
     if (!token) {
-
       return;
     }
 
     const wcUriWithToken = `${wcUri.value}&token=${token}`;
 
     useNetworkProviderStore().setWalletConnectUri(wcUriWithToken);
-    useLoginInfoStore().setTokenLogin({ loginToken: token });
+    // useLoginInfoStore().setTokenLogin({ loginToken: token });
   }
 
   async function initiateLogin(loginProvider = true) {
@@ -233,7 +240,6 @@ export const useWalletConnectV2Login = ({
       walletConnectV2Options
     );
 
-
     await newProvider.init();
     useNetworkProviderStore().setCurrent(newProvider);
     setAccountProvider(newProvider);
@@ -243,8 +249,6 @@ export const useWalletConnectV2Login = ({
     if (loginProvider) {
       await generateWalletConnectUri();
     }
-
-    uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useNetworkProviderStore().getWalletConnectUri)}`;
   }
 
   const loginFailed = Boolean(error.value);
@@ -311,12 +315,11 @@ export const useWalletConnectV2Login = ({
     },
     {
       uriDeepLink,
-      walletConnectUri: wcUri.value,
+      walletConnectUri: wcUri,
       cancelLogin,
       connectExisting,
       removeExistingPairing,
       getWcPairings
-    },
-    getWcUri
+    }
   ];
 };

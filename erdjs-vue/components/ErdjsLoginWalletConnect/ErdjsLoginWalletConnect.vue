@@ -1,7 +1,7 @@
 <template>
     <div class="erdjs-vue__login-wrappper d-flex flex-column justify-content-start align-items-center">
-        <div class="dapp-login__tab-error" v-if="error">
-            {{ error }}
+        <div class="dapp-login__tab-error" v-if="errorMessage">
+            {{ errorMessage }}
         </div>
         <h4>xPortal (Legacy) Login</h4>
         <div v-if="isMobileDevice && uriDeepLink">
@@ -13,91 +13,88 @@
             <button @click.prevent="$emit('hide-login-tab')" class="btn btn-secondary">Back</button>
         </div>
         <div class="mt-3 small">
-            <a href="#" @click.prevent="$emit('change-login-tab', getLoginMethods().walletconnectv2)">Unable to login with legacy version? Use the latest one.</a>
+            <a href="#" @click.prevent="$emit('change-login-tab', LoginMethodsEnum.walletconnectv2)">Unable to login with legacy version? Use the latest one.</a>
         </div>
     </div>
 </template>
 
-<script>
-import { LoginMethodsEnum } from 'erdjs-vue/types/index'
-import { useWalletConnectLogin } from 'erdjs-vue/hooks/login/useWalletConnectLogin';
+<script lang="ts">
+import { defineComponent, ref, watch } from 'vue';
+import { LoginMethodsEnum } from './../../types/index';
+import { useWalletConnectLogin } from './../../hooks/login/useWalletConnectLogin';
 import QRCode from 'qrcode';
-import { isMobileEnvironment } from 'erdjs-vue/utils/environment/isMobileEnvironment';
 
-export default {
-    name: 'ErdjsLoginWalletConnect',
-    data() {
-        return {
-            error: null,
-            qrCodeSvg: '',
-            uriDeepLink: '',
-            walletConnectUri: '',
-        }
-    },
+export default defineComponent({
     props: {
         selectedMode: {
             type: String,
             default: '',
-            uriDeepLink: '',
-            isMobile: false,
-        }
+        },
     },
     mounted() {
-        this.generateQRCode()
         if (this.selectedMode === LoginMethodsEnum.walletconnect) {
             this.login()
         }
-        this.isMobile = isMobileEnvironment();
     },
-    watch: {
-        walletConnectUri() {
-            this.generateQRCode();
+    setup() {
+        const errorMessage = ref<string>('');
+        const qrCodeSvg = ref<string>('');
+
+        const [
+            onInitiateLogin,
+            { error },
+            { uriDeepLink, walletConnectUri }
+        ] = useWalletConnectLogin({
+            logoutRoute: '/login',
+        });
+
+        if (error) {
+            errorMessage.value = error;
         }
-    },
-    computed: {
-        isMobileDevice() {
-            return "ontouchstart" in window || "onmsgesturechange" in window;
-        }
-    },
-    methods: {
-        async login() {
-            const [
-                onInitiateLogin,
-                { error },
-                { uriDeepLink, walletConnectUri }
-            ] = await useWalletConnectLogin({
-                logoutRoute: '/login',
-                callbackRoute: '/login'
-            });
-            onInitiateLogin();
-            this.walletConnectUri = walletConnectUri;
-            this.uriDeepLink = uriDeepLink;
-        },
-        async generateQRCode() {
-            const canGenerateQRCodeForWC2 = false;
-            const canGenerateQRCodeForWC1 = Boolean(this.walletConnectUri);
-            const canGenerateQRCode =
-                canGenerateQRCodeForWC2 || canGenerateQRCodeForWC1;
+
+        const generateQRCode = async () => {
+            const canGenerateQRCode = Boolean(walletConnectUri.value);
 
             if (!canGenerateQRCode) {
                 return;
             }
 
-            const uri = this.walletConnectUri;
-            if (uri) {
-                const svg = await QRCode.toString(uri, {
+            if (walletConnectUri.value) {
+                const svg = await QRCode.toString(walletConnectUri.value, {
                     type: 'svg'
                 });
                 if (svg) {
-                    this.qrCodeSvg = svg;
+                    qrCodeSvg.value = svg;
                 }
             }
-        },
-        getLoginMethods() {
-            return LoginMethodsEnum;
         }
+
+        watch(walletConnectUri, () => {
+            generateQRCode();
+        }, {
+            immediate: true
+        });
+
+        const login = () => {
+            onInitiateLogin();
+        }
+
+
+        return {
+            errorMessage,
+            qrCodeSvg,
+            login,
+            generateQRCode,
+            uriDeepLink,
+            LoginMethodsEnum
+        }
+    },
+    computed: {
+        isMobileDevice() {
+            return "ontouchstart" in window || "onmsgesturechange" in window;
+        },
     }
-};
+});
 </script>
 
 <style>
