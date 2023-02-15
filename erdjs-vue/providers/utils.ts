@@ -1,10 +1,7 @@
-// Last synced with @elrondnetwork/dapp-core version 2.1.16
-// 2022-11-30
-
 import type { SignableMessage, Transaction } from '@multiversx/sdk-core';
 import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 import { HWProvider } from '@multiversx/sdk-hw-provider';
-import type { IHWElrondApp } from '@multiversx/sdk-hw-provider/out/interface';
+import type { IHWWalletApp } from '@multiversx/sdk-hw-provider/out/interface';
 
 import type {
   // @ts-ignore
@@ -49,7 +46,7 @@ export const getLedgerConfiguration = async (
   if (!initializedHwWalletP.isInitialized()) {
     throw new Error('Unable to get version. Provider not initialized');
   }
-  const hwApp: IHWElrondApp = (initializedHwWalletP as any).hwApp;
+  const hwApp: IHWWalletApp = (initializedHwWalletP as any).hwApp;
   const { contractData, version } = await hwApp.getAppConfiguration();
   const dataEnabled = contractData === LEDGER_CONTRACT_DATA_ENABLED_VALUE;
   return { version, dataEnabled };

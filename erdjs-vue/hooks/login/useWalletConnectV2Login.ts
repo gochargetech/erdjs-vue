@@ -59,12 +59,9 @@ export const useWalletConnectV2Login = ({
   logoutRoute,
   callbackRoute,
   token: tokenToSign,
-  nativeAuth,
   onLoginRedirect
 }: InitWalletConnectV2Type): WalletConnectV2LoginHookReturnType => {
   let errorMessage = '';
-  const hasNativeAuth = nativeAuth != null;
-  // const loginService = useLoginService(nativeAuth);
   const token = tokenToSign;
 
   const isLoading = ref<boolean>(true);
