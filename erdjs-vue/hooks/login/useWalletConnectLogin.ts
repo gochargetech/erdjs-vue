@@ -2,7 +2,7 @@ import { useGetAccountProvider } from 'erdjs-vue/hooks/account/useGetAccountProv
 import { setAccountProvider } from 'erdjs-vue/providers/accountProvider';
 import { logout } from 'erdjs-vue/utils/logout';
 import { getIsProviderEqualTo } from 'erdjs-vue/utils/account/getIsProviderEqualTo';
-import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 import { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
 import type {
   LoginHookGenericStateType,
@@ -39,13 +39,13 @@ export const useWalletConnectLogin = ({
   let errorMessage = '';
   const { provider } = useGetAccountProvider();
 
-  useProviderStore().setCurrent(provider);
+  useNetworkProviderStore().setCurrent(provider);
   const walletConnectBridgeAddress = useDappStore().getWalletConnectBridgeAddress;
   const walletConnectDeepLink = useDappStore().getWalletConnectDeepLink;
 
   let heartbeatDisconnectInterval: NodeJS.Timeout;
 
-  const walletConnectUri = useProviderStore().getWalletConnectUri;
+  const walletConnectUri = useNetworkProviderStore().getWalletConnectUri;
   const hasWalletConnectUri = Boolean(walletConnectUri);
   const isLoading = !hasWalletConnectUri;
 
@@ -59,7 +59,7 @@ export const useWalletConnectLogin = ({
 
   async function handleOnLogin() {
     try {
-      const currentProvider = useProviderStore().getCurrent;
+      const currentProvider = useNetworkProviderStore().getCurrent;
       const isLoggedIn = getIsLoggedIn();
 
       if (
@@ -127,7 +127,7 @@ export const useWalletConnectLogin = ({
     }
 
     // @ts-ignore
-    const uri: string = await useProviderStore().getCurrent?.login();
+    const uri: string = await useNetworkProviderStore().getCurrent?.login();
     const hasUri = Boolean(uri);
 
     if (!hasUri) {
@@ -135,13 +135,13 @@ export const useWalletConnectLogin = ({
     }
 
     if (!token) {
-      useProviderStore().setWalletConnectUri(uri);
+      useNetworkProviderStore().setWalletConnectUri(uri);
       return;
     }
 
     const wcUriWithToken = `${uri}&token=${token}`;
 
-    useProviderStore().setWalletConnectUri(wcUriWithToken);
+    useNetworkProviderStore().setWalletConnectUri(wcUriWithToken);
     useLoginInfoStore().setTokenLogin({ loginToken: token });
   }
 
@@ -151,7 +151,7 @@ export const useWalletConnectLogin = ({
     if (
       !walletConnectBridgeAddress ||
       // @ts-ignore
-      (useProviderStore().current?.isInitialized?.() && !shouldGenerateWcUri)
+      (useNetworkProviderStore().current?.isInitialized?.() && !shouldGenerateWcUri)
     ) {
       return;
     }
@@ -167,14 +167,14 @@ export const useWalletConnectLogin = ({
     );
 
     await newProvider.init();
-    useProviderStore().setCurrent(newProvider);
+    useNetworkProviderStore().setCurrent(newProvider);
 
     setAccountProvider(newProvider);
     if (loginProvider) {
       await generateWalletConnectUri();
     }
 
-    uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useProviderStore().getWalletConnectUri)}`;
+    uriDeepLink = `${walletConnectDeepLink}?wallet-connect=${encodeURIComponent(useNetworkProviderStore().getWalletConnectUri)}`;
 
   }
   // const loginFailed = Boolean(error);

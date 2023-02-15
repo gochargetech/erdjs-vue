@@ -4,17 +4,18 @@
 import type { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
 import type { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 import type { HWProvider } from '@multiversx/sdk-hw-provider';
-import type { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
+import type { WalletConnectProvider, WalletConnectV2Provider } from '@multiversx/sdk-wallet-connect-provider';
 import type { IDappProvider } from 'erdjs-vue/types';
 import { emptyProvider } from 'erdjs-vue/providers/utils';
-// import { useProviderStore } from 'erdjs-vue/store/erdjsProvider';
+import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 
 export type ProvidersType =
   | IDappProvider
   | WalletProvider
   | ExtensionProvider
   | HWProvider
-  | WalletConnectProvider;
+  | WalletConnectProvider
+  | WalletConnectV2Provider;
 
 let accountProvider: ProvidersType = emptyProvider;
 
@@ -22,11 +23,11 @@ export function setAccountProvider<TProvider extends ProvidersType>(
   provider: TProvider
 ) {
   accountProvider = provider;
-  // useProviderStore().setCurrent(accountProvider);
+  // useNetworkProviderStore().setCurrent(accountProvider);
 }
 
 export function getAccountProvider(): ProvidersType {
-  // const provider = useProviderStore().getCurrent;
+  // const provider = useNetworkProviderStore().getCurrent;
 
   // return provider
   //   ? (provider as ProvidersType)
