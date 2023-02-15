@@ -1,6 +1,3 @@
-// Last synced with @elrondnetwork/dapp-core version 2.1.16
-// 2022-11-30
-
 import type { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
 import type { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 import type { HWProvider } from '@multiversx/sdk-hw-provider';

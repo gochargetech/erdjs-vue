@@ -3,13 +3,13 @@ import type { ProvidersType } from 'erdjs-vue/providers/accountProvider';
 import { emptyProvider } from 'erdjs-vue/providers/utils';
 
 interface ProviderInitialState {
-  wallet_connect_uri: string,
-  current: ProvidersType
+  getWalletConnectUri: string,
+  getCurrent: ProvidersType
 }
 
 const initialState: ProviderInitialState = {
-  wallet_connect_uri: '',
-  current: emptyProvider
+  getWalletConnectUri: '',
+  getCurrent: emptyProvider
 };
 
 export const useNetworkProviderStore = defineStore('erdjs-provider', {
@@ -17,20 +17,12 @@ export const useNetworkProviderStore = defineStore('erdjs-provider', {
     return { ...initialState }
   },
   persist: true,
-  getters: {
-    getWalletConnectUri: (state) => {
-      return state.wallet_connect_uri;
-    },
-    getCurrent: (state) => {
-      return state.current;
-    },
-  },
   actions: {
     setWalletConnectUri(payload: string) {
-      this.wallet_connect_uri = payload;
+      this.getWalletConnectUri = payload;
     },
     setCurrent(payload: ProvidersType) {
-      this.current = payload;
+      this.getCurrent = payload;
     },
   },
 })
