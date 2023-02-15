@@ -1,6 +1,6 @@
 // @ts-ignore
 import { App } from 'vue'
-import { createPinia } from 'pinia'
+import { createPinia, type Pinia } from 'pinia'
 import piniaPluginPersistedstate from 'pinia-plugin-persistedstate'
 import Dapp from './Dapp'
 import type DappType from './Dapp'
@@ -18,10 +18,13 @@ export interface ErdjsVue {
 }
 
 export interface ErdjsVueOptions {
+  loadCss?: boolean,
   chain?: string
+  piniaInstance?: Pinia
 }
 
 const defaultOptions: ErdjsVueOptions = {
+  loadCss: true,
   chain: 'devnet',
 }
 
@@ -30,9 +33,12 @@ export function erdjsVue(options: ErdjsVueOptions = defaultOptions): ErdjsVue {
     dapp: {} as DappType,
     options: options,
     install(app: App) {
-      const pinia = createPinia();
-      pinia.use(piniaPluginPersistedstate);
-      app.use(pinia);
+      // Pass pinia instance as argument.
+      if (!options.piniaInstance) {
+        const pinia = createPinia();
+        pinia.use(piniaPluginPersistedstate);
+        app.use(pinia);
+      }
 
       this.dapp = new Dapp(options.chain as EnvironmentsEnum);
       this.dapp.init();
