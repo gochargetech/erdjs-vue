@@ -3,14 +3,17 @@
         <div class="dapp-login__tab-error" v-if="error">
             {{ error }}
         </div>
-        <h4>Maiar Login</h4>
+        <h4>xPortal (Legacy) Login</h4>
         <div v-if="isMobileDevice && uriDeepLink">
             <a :href="uriDeepLink" class="btn btn-primary w-100 mb-4">Click to login</a>
         </div>
-        <p class="mb-2">Scan the QR Code with Maiar app</p>
+        <p class="mb-2">Scan the QR Code with xPortal app</p>
         <div v-html="qrCodeSvg" v-if="qrCodeSvg" class="wallet-connect-qrcode px-4"></div>
         <div class="back-button my-3">
             <button @click.prevent="$emit('hide-login-tab')" class="btn btn-secondary">Back</button>
+        </div>
+        <div class="mt-3 small">
+            <a href="#" @click.prevent="$emit('change-login-tab', getLoginMethods().walletconnectv2)">Unable to login with legacy version? Use the latest one.</a>
         </div>
     </div>
 </template>
@@ -89,6 +92,9 @@ export default {
                     this.qrCodeSvg = svg;
                 }
             }
+        },
+        getLoginMethods() {
+            return LoginMethodsEnum;
         }
     }
 };

@@ -10,6 +10,10 @@
                         @click.prevent="(loginMethod = getLoginMethods().extension)"
                         class="m-2 btn btn-primary"
                     ><slot name="extension">{{ buttonTextExtension }}</slot></button>
+                    <button 
+                        @click.prevent="(loginMethod = getLoginMethods().walletconnectv2)"
+                        class="m-2 btn btn-primary"
+                    ><slot name="xportal">{{ buttonTextXPortal }}</slot></button>
                     <!-- <button 
                         @click.prevent="(loginMethod = getLoginMethods().ledger)"
                         class="m-2 btn btn-primary"
@@ -18,14 +22,6 @@
                         @click.prevent="(loginMethod = getLoginMethods().wallet)"
                         class="m-2 btn btn-primary"
                     ><slot name="webwallet">{{ buttonTextWebWallet }}</slot></button>
-                    <button 
-                        @click.prevent="(loginMethod = getLoginMethods().walletconnect)"
-                        class="m-2 btn btn-primary"
-                    ><slot name="maiarapp">{{ buttonTextMaiarApp }}</slot></button>
-                    <button 
-                        @click.prevent="(loginMethod = getLoginMethods().walletconnectv2)"
-                        class="m-2 btn btn-primary"
-                    ><slot name="xportal">{{ buttonTextXPortal }}</slot></button>
                 </div>
             </template>
             <template v-if="loginMethod === getLoginMethods().extension">
@@ -36,11 +32,13 @@
             </template>
             <template v-if="(loginMethod === getLoginMethods().walletconnect)">
                 <ErdjsLoginWalletConnect :selected-mode="loginMethod"
-                    @hide-login-tab="(loginMethod = getLoginMethods().none)" />
+                    @hide-login-tab="(loginMethod = getLoginMethods().none)" 
+                    @change-login-tab="(tab) => loginMethod = tab" />
             </template>
             <template v-if="(loginMethod === getLoginMethods().walletconnectv2)">
                 <ErdjsLoginWalletConnectV2 :selected-mode="loginMethod"
-                    @hide-login-tab="(loginMethod = getLoginMethods().none)" />
+                    @hide-login-tab="(loginMethod = getLoginMethods().none)"
+                    @change-login-tab="(tab) => loginMethod = tab" />
             </template>
         </template>
         <template v-if="isLoggedIn">
