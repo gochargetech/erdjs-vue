@@ -1,5 +1,5 @@
 <template>
-    <div class="erdjs-vue__login-wrappper">
+    <div class="erdjs-vue__login-wrappper px-2 text-center">
         <div class="dapp-login__tab-error" v-if="error">
             {{ error }}
         </div>

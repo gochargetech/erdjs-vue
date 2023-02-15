@@ -10,7 +10,7 @@
             <div v-for="(pairing, pIndex) of activeWcPairings" :key="pIndex" class="w-100 mb-2">
                 <div v-if="pairing.peerMetadata" 
                     :key="pairing.topic"
-                    class="pairing w-100 d-flex flex-row align-items-center p-2 rounded" 
+                    class="pairing d-flex flex-row align-items-center p-2 rounded mx-3" 
                 >
                     <img v-if="pairing.peerMetadata?.icons?.[0]" :src="pairing.peerMetadata.icons[0]" :alt="pairing.peerMetadata.name" class="pairing--img me-2" />
                     <div class="d-flex flex-column align-items-start">
@@ -169,16 +169,21 @@ export default defineComponent({
     max-width: 100%;
     height: auto;
 }
+.pairing {
+    position: relative;
+    background-color: var(--bs-secondary-bg);
+
+}
+.pairing strong,
+.pairing span {
+    color: var(--bs-secondary-text);
+
+}
 .pairing--img {
     width: 100%;
     max-width: 3rem;
     height: auto;
     display: block;
-}
-.pairing {
-    position: relative;
-    background-color: var(--bs-gray-200);
-
 }
 .pairing--link {
     position: absolute;
@@ -189,10 +194,12 @@ export default defineComponent({
     left: 0;
     top: 0;
 }
-.btn-pairing-remove {
+.btn.btn-pairing-remove {
     position: absolute;
     right: 1rem;
     top: 1rem;
     z-index: 3;
+    color: var(--bs-secondary-text);
+    line-height: 1;
 }
 </style>

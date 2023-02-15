@@ -1,9 +1,12 @@
 <template>
-    <div class="erdjs-vue__login-wrappper">
+    <div class="erdjs-vue__login-wrappper px-2 text-center">
         <div class="dapp-login__tab-error" v-if="error">
             {{ error }}
         </div>
         <h4>Web Wallet Login</h4>
+        <p class="dapp-login__tab-text">
+            Please wait a moment, you'll be redirected to MultiversX Web Wallet...
+        </p>
         <div class="back-button">
             <button @click.prevent="$emit('hide-login-tab')" class="btn btn-secondary">Back</button>
         </div>
