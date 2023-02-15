@@ -91,7 +91,11 @@ export const useDappStore = defineStore('erdjs-dapp', {
 
       const walletConnectV2ProjectId = payload.walletConnectV2ProjectId
         ? payload.walletConnectV2ProjectId
-        : import.meta.env.VITE_VUE_APP_WC_PROJECT_ID;
+        : '';
+
+      if (!walletConnectV2ProjectId) {
+        throw new Error('Missing Wallet Connect V2 Project ID. You can generate one here: https://cloud.walletconnect.com/app');
+      }
 
       const network: BaseNetworkType = payload;
 
