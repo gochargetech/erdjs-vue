@@ -28,7 +28,18 @@ const defaultOptions: ErdjsVueOptions = {
   chain: 'devnet',
 }
 
-export function erdjsVue(options: ErdjsVueOptions = defaultOptions): ErdjsVue {
+export interface ErdjsVueCustomConfig {
+  walletConnectV2ProjectId?: string
+}
+
+const defaultCustomNetworkConfig: ErdjsVueCustomConfig = {
+  walletConnectV2ProjectId: ''
+}
+
+export function erdjsVue(
+  options: ErdjsVueOptions = defaultOptions,
+  customNetworkConfig: ErdjsVueCustomConfig = defaultCustomNetworkConfig
+): ErdjsVue {
   const erdjs: ErdjsVue = {
     dapp: {} as DappType,
     options: options,
@@ -40,7 +51,7 @@ export function erdjsVue(options: ErdjsVueOptions = defaultOptions): ErdjsVue {
         app.use(pinia);
       }
 
-      this.dapp = new Dapp(options.chain as EnvironmentsEnum);
+      this.dapp = new Dapp(options.chain as EnvironmentsEnum, customNetworkConfig);
       this.dapp.init();
 
       // Auto import all components

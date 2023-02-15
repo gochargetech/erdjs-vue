@@ -36,12 +36,16 @@ const app = createApp(App)
 const erdjs = erdjsVue({
   loadCss: false,
   chain: 'devnet',
+},{
+  walletConnectV2ProjectId: import.meta.env.VITE_VUE_APP_WC_PROJECT_ID || ''
 });
 app.use(erdjs)
 
 // Mount app.
 app.mount('#app')
 ```
+Important: Wallet Connect V2 Project ID is required, make sure to generate one here: https://cloud.walletconnect.com/app
+
 
 If you're loading `Pinia` before init erdjsVue, then you'll have to pass it as param to make sure it's not loaded again in our plugin:
 ```
@@ -61,6 +65,8 @@ const erdjs = erdjsVue({
   loadCss: false,
   chain: 'devnet',
   piniaInstance: pinia,
+},{
+  walletConnectV2ProjectId: import.meta.env.VITE_VUE_APP_WC_PROJECT_ID || ''
 });
 app.use(erdjs)
 
