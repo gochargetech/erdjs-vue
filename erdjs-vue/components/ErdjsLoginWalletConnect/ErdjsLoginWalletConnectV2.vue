@@ -26,7 +26,7 @@
                         <span>{{pairing.peerMetadata.url}}</span>
                     
                         <a href="#" @click.prevent="pairingSelected(pairing)" class="pairing--link" title="Connect pairing"></a>
-                        <button class="btn btn-pairing-remove" @click.prevent="pairingRemoved(pairing)">x</button>
+                        <button class="btn btn-pairing-remove" @click.prevent="pairingRemoved(pairing)">×</button>
                     </div>
                 </div>
             </div>
