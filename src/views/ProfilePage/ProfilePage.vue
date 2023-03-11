@@ -23,20 +23,5 @@ export default {
       return this.$erdjs.getDapp().getLoginInfoStore().isLoggedIn;
     },
   },
-  methods: {
-    async newTransaction() {
-      const tx = {
-        value: "100000000000000000",
-        data: "ping",
-        receiver:
-          "erd1g5dqap37a650g564nsehjwxd9m3pzgxla83pcd3w7f5s8lgxq9eq3g884u",
-      };
-      this.$erdjs.dapp.sendTransaction(tx).then(({ sessionId, error }) => {
-        if (error) {
-          alert(error);
-        }
-      });
-    },
-  },
 };
 </script>
