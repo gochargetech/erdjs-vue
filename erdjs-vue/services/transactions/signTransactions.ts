@@ -75,8 +75,6 @@ export async function signTransactions({
 
       if (tx.getSender().valueOf().toString() !== currentAddress) {
         tx.sender = new Address(currentAddress);
-        console.log(tx)
-        alert(currentAddress)
       }
 
       // TODO: implement correct gas cost calculation.
