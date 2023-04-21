@@ -95,6 +95,9 @@ export default {
             return useDappStore().getEgldLabel;
         }
     },
+    mounted() {
+        this.signTx()
+    },
     methods: {
         signTx() {
             const {
