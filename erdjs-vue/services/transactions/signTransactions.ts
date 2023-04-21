@@ -1,6 +1,6 @@
 import BigNumber from 'bignumber.js';
 import { GAS_LIMIT } from 'erdjs-vue/constants/index';
-import type { IGasLimit } from '@multiversx/sdk-core';
+import { type IGasLimit, Address } from '@multiversx/sdk-core';
 
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { useDappStore } from 'erdjs-vue/store/erdjsDapp';
@@ -64,12 +64,18 @@ export async function signTransactions({
     return { error: 'Invalid ChainID', sessionId: null };
   }
 
+  const currentAddress = useAccountStore().getAddress;
+
   const signTransactionsPayload = {
     sessionId,
     callbackRoute,
     customTransactionInformation,
     transactions: transactionsPayload.map((tx) => {
       let gasLimit = Number(calculateGasLimit(tx.getData().valueOf().toString()));
+
+      if (tx.getSender().valueOf().toString() !== currentAddress) {
+        tx.sender = new Address(currentAddress);
+      }
 
       // TODO: implement correct gas cost calculation.
       // @see https://gateway.elrond.com/network/gas-configs

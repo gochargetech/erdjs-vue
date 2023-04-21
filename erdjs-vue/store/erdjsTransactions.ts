@@ -75,7 +75,7 @@ export const useTransactionsStore = defineStore('erdjs-transactions', {
   state: () => {
     return { ...initialState }
   },
-  persist: false,
+  persist: true,
   getters: {
     getTransactionsToSign: (state) => {
       if (state?.transactionsToSign == null) {
