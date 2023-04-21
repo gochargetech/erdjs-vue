@@ -74,6 +74,7 @@ export async function signTransactions({
       let gasLimit = Number(calculateGasLimit(tx.getData().valueOf().toString()));
 
       if (tx.getSender().valueOf().toString() !== currentAddress) {
+        // @ts-ignore
         tx.sender = new Address(currentAddress);
       }
 
