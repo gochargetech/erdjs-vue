@@ -38,7 +38,8 @@
 </template>
 
 <script>
-import { useSignTransactions } from 'erdjs-vue/hooks/transactions/useSignTransactions'
+import { useSignTransactions } from 'erdjs-vue/hooks/transactions/useSignTransactions';
+import { useSignTransactionsCommonData } from 'erdjs-vue/hooks/transactions/useSignTransactionsCommonData';
 import { useTransactionsStore } from 'erdjs-vue/store/erdjsTransactions'
 import { useDappStore } from 'erdjs-vue/store/erdjsDapp'
 
@@ -96,19 +97,12 @@ export default {
         }
     },
     mounted() {
-        this.signTx()
+        // this.signTx()
+        useSignTransactionsCommonData();
     },
     methods: {
         signTx() {
-            const {
-                callbackRoute,
-                transactions,
-                error,
-                sessionId,
-                onAbort,
-                hasTransactions,
-                canceledTransactionsMessage
-            } = useSignTransactions();
+            useSignTransactions();
         },
         rejectTx() {
             useTransactionsStore().clearAllTransactionsToSign();

@@ -36,7 +36,6 @@
 
 <script>
 import { useGetTransactionDisplayInfo } from 'erdjs-vue/hooks/transactions/useGetTransactionDisplayInfo';
-import { AVERAGE_TX_DURATION_MS, CROSS_SHARD_ROUNDS } from 'erdjs-vue/constants/index';
 import {
     getIsTransactionPending,
     getIsTransactionTimedOut
@@ -74,6 +73,23 @@ export default {
         // const transactionDuration = transactionDisplayInfo?.transactionDuration || shardAdjustedDuration;
         if (!this.getTx?.transactions) {
             this.closeThis(this.toastId);
+        }
+
+        if (this.getTxStatus === 'success' || this.getTxStatus === 'fail') {
+            setTimeout(() => {
+                this.closeThis(this.toastId)
+            }, 8000);
+        }
+    },
+    watch: {
+        getTxStatus: {
+            handler(newValue) {
+                if (newValue === 'success' || newValue === 'fail') {
+                    setTimeout(() => {
+                        this.closeThis(this.toastId)
+                    }, 8000);
+                }
+            }
         }
     },
     computed: {
