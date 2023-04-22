@@ -1,6 +1,6 @@
 {
     "name": "erdjs-vue",
-    "version": "0.9.8",
+    "version": "0.9.9",
     "private": false,
     "description": "A Vue.js library that holds the core functional logic of a dapp on the MultiversX (formerly Elrond)",
     "keywords": [
