@@ -62,7 +62,6 @@ export const useWalletConnectV2Login = ({
   token: tokenToSign,
   onLoginRedirect
 }: InitWalletConnectV2Type): WalletConnectV2LoginHookReturnType => {
-  let errorMessage = '';
   const token = tokenToSign;
 
   const isLoading = ref<boolean>(true);
