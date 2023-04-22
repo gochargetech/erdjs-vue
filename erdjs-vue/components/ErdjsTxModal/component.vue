@@ -7,28 +7,49 @@
                         <h5 class="modal-title">Sign Transaction</h5>
                     </div>
                     <div class="modal-body">
-                        <div class="mb-3">
-                            <div class="fw-bold">Sender address</div>
-                            <div class="fw-normal text-break">{{getSenderAddress}}</div>
-                        </div>
-                        <div class="mb-3">
-                            <div class="fw-bold">Receiver address</div>
-                            <div class="fw-normal text-break">{{getReceiverAddress}}</div>
-                        </div>
-                        <div class="mb-3" v-if="getTxValue">
-                            <div class="fw-bold">Value</div>
-                            <div class="fw-normal text-break">{{ getTxFormattedValue }} {{ getEgldLabel }}</div>
-                        </div>
-                        <div class="mb-3" v-if="getTxData">
-                            <div class="fw-bold">Data</div>
-                            <div class="tx-data fw-normal border rounded-2 bg-secondary bg-opacity-10 p-2">
-                                {{getTxData}}
+                        <template v-if="getIsXPortalLogin && getWaitingForXportalToSign">
+                            <div class="d-flex flex-row align-items-center">
+                                <div>
+                                    <div class="spinner-border" role="status">
+                                        <span class="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                                <div class="fs-4 ms-3">
+                                    Check your phone to sign the transaction with xPortal app
+                                </div>
                             </div>
-                        </div>
+                        </template>
+                        <template v-else>
+                            <div class="mb-3">
+                                <div class="fw-bold">Sender address</div>
+                                <div class="fw-normal text-break">{{getSenderAddress}}</div>
+                            </div>
+                            <div class="mb-3">
+                                <div class="fw-bold">Receiver address</div>
+                                <div class="fw-normal text-break">{{getReceiverAddress}}</div>
+                            </div>
+                            <div class="mb-3" v-if="getTxValue">
+                                <div class="fw-bold">Value</div>
+                                <div class="fw-normal text-break">{{ getTxFormattedValue }} {{ getEgldLabel }}</div>
+                            </div>
+                            <div class="mb-3" v-if="getTxData">
+                                <div class="fw-bold">Data</div>
+                                <div class="tx-data fw-normal border rounded-2 bg-secondary bg-opacity-10 p-2">
+                                    {{getTxData}}
+                                </div>
+                            </div>
+                        </template>
                     </div>
                     <div class="modal-footer flex flex-row justify-content-between">
                         <button @click.prevent="rejectTx()" type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                        <button @click.prevent="signTx()" type="button" class="btn btn-primary">Confirm</button>
+                        <button @click.prevent="signTx()" type="button" class="btn btn-primary" :disabled="getWaitingForXportalToSign">
+                            <span v-if="getWaitingForXportalToSign" class="me-2">
+                                <div class="spinner-border spinner-border-sm" role="status">
+                                    <span class="visually-hidden">Loading...</span>
+                                </div>
+                            </span>
+                            {{getConfirmButtonLabel}}
+                        </button>
                     </div>
                 </div>
             </div>
@@ -47,7 +68,27 @@ import { formatAmount } from 'erdjs-vue/utils/operations/formatAmount';
 
 export default {
     name: 'ErdjsTxModal',
+    data() {
+        return {
+            xportal: 'walletconnectv2',
+            waitingForXPortalToSign: false
+        }
+    },
     computed: {
+        getLoginMethod() {
+            return this.$erdjs.getDapp().getLoginInfoStore().getLoginMethod;
+        },
+        getIsXPortalLogin() {
+            return this.$erdjs.getDapp().getLoginInfoStore().getLoginMethod === this.xportal;
+        },
+        getConfirmButtonLabel() {
+            return this.getLoginMethod === this.xportal && this.waitingForXPortalToSign
+                ? 'Sign on xPortal'
+                : 'Confirm';
+        },
+        getWaitingForXportalToSign() {
+            return this.waitingForXPortalToSign;
+        },
         myAddress() {
             return this.$erdjs.getDapp().getAccountStore().getAddress;
         },
@@ -102,6 +143,7 @@ export default {
     },
     methods: {
         signTx() {
+            this.waitingForXPortalToSign = true;
             useSignTransactions();
         },
         rejectTx() {

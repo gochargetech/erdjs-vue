@@ -299,9 +299,20 @@ export const useWalletConnectV2Login = ({
     } catch (err) {
       console.error(WalletConnectV2Error.errorLogout, err);
       error.value = WalletConnectV2Error.errorLogout;
+      alert(error.value);
     } finally {
-      // @ts-ignore
-      wcPairings.value = useNetworkProviderStore().getCurrent?.pairings;
+      if (topic) {
+        // @ts-ignore
+        const prs = useNetworkProviderStore().getCurrent?.pairings;
+
+        // @ts-ignore
+        wcPairings.value = prs.filter((p) => {
+          return p.topic !== topic;
+        })
+      } else {
+        // @ts-ignore
+        wcPairings.value = useNetworkProviderStore().getCurrent?.pairings;
+      }
     }
   };
 
@@ -309,7 +320,7 @@ export const useWalletConnectV2Login = ({
     initiateLogin,
     {
       loginFailed,
-      error: errorMessage,
+      error: error.value,
       isLoading: isLoading.value,
       isLoggedIn: false,
     },
