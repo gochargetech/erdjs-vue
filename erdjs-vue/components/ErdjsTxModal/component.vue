@@ -139,6 +139,7 @@ export default {
     },
     mounted() {
         // this.signTx()
+        this.waitingForXPortalToSign = false;
         useSignTransactionsCommonData();
     },
     methods: {
@@ -147,6 +148,7 @@ export default {
             useSignTransactions();
         },
         rejectTx() {
+            this.waitingForXPortalToSign = false;
             useTransactionsStore().clearAllTransactionsToSign();
         }
     }
