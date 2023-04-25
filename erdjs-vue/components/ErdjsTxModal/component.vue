@@ -74,6 +74,13 @@ export default {
             waitingForXPortalToSign: false
         }
     },
+    watch: {
+        currentTx(newVal) {
+            if (newVal === null) {
+                this.waitingForXPortalToSign = false;
+            }
+        }
+    },
     computed: {
         getLoginMethod() {
             return this.$erdjs.getDapp().getLoginInfoStore().getLoginMethod;
@@ -82,7 +89,7 @@ export default {
             return this.$erdjs.getDapp().getLoginInfoStore().getLoginMethod === this.xportal;
         },
         getConfirmButtonLabel() {
-            return this.getLoginMethod === this.xportal && this.waitingForXPortalToSign
+            return this.getLoginMethod === this.xportal && this.getWaitingForXportalToSign
                 ? 'Sign on xPortal'
                 : 'Confirm';
         },
