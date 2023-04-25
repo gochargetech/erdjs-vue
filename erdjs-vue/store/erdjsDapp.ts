@@ -39,7 +39,7 @@ export interface NetworkConfigStateType {
 
 const initialState = {
   network: defaultNetwork,
-  chainID: 'D',
+  chainID: '1',
   accountInfo: emptyAccount
 };
 
