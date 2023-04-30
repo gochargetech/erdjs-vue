@@ -14,10 +14,10 @@
                         @click.prevent="(loginMethod = getLoginMethods().walletconnectv2)"
                         class="m-2 btn btn-primary"
                     ><slot name="xportal">{{ buttonTextXPortal }}</slot></button>
-                    <!-- <button 
+                    <button 
                         @click.prevent="(loginMethod = getLoginMethods().ledger)"
                         class="m-2 btn btn-primary"
-                    ><slot name="ledger">{{ buttonTextLedger }}</slot></button> -->
+                    ><slot name="ledger">{{ buttonTextLedger }}</slot></button>
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().wallet)"
                         class="m-2 btn btn-primary"
@@ -40,6 +40,11 @@
                     @hide-login-tab="(loginMethod = getLoginMethods().none)"
                     @change-login-tab="(tab) => loginMethod = tab" />
             </template>
+            <template v-if="(loginMethod === getLoginMethods().ledger)">
+                <ErdjsLoginLedger :selected-mode="loginMethod"
+                    @hide-login-tab="(loginMethod = getLoginMethods().none)"
+                    @change-login-tab="(tab) => loginMethod = tab" />
+            </template>
         </template>
         <template v-if="isLoggedIn">
             <p class="text-center">MultiversX address: <strong>{{ getAddressShort }}</strong></p>
@@ -57,6 +62,7 @@ import { ErdjsLoginExtension } from 'erdjs-vue/components/ErdjsLoginExtension'
 import { ErdjsLoginWebWallet } from 'erdjs-vue/components/ErdjsLoginWebWallet'
 import { ErdjsLoginWalletConnect } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
 import { ErdjsLoginWalletConnectV2 } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
+import { ErdjsLoginLedger } from 'erdjs-vue/components/ErdjsLoginLedger'
 import { logout } from 'erdjs-vue/utils/logout'
 import { getExplorerUrl, explorerUrlBuilder } from 'erdjs-vue/utils/transactions/getInterpretedTransaction/helpers';
 
@@ -67,6 +73,7 @@ export default {
         ErdjsLoginWebWallet,
         ErdjsLoginWalletConnect,
         ErdjsLoginWalletConnectV2,
+        ErdjsLoginLedger
     },
     data() {
         return {

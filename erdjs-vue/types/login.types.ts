@@ -8,6 +8,7 @@ export interface LoginHookGenericStateType {
 }
 
 export type InitiateLoginFunctionType = () => void;
+export type SelectAccountFunctionType = () => void;
 
 export type LoginHookReturnType = [
   LoginHookReturnType,
@@ -25,9 +26,10 @@ export type OnLoginRedirectType = (
 ) => void;
 
 export interface NativeAuthConfigType {
-  hostname?: string;
+  origin?: string;
   apiAddress?: string;
   expirySeconds?: number;
+  blockHashShard?: number;
   /**
    * Displays a logout toast warning before token expiration. Defaults to 5 minutes.
    *
