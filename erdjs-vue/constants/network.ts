@@ -46,7 +46,7 @@ export const fallbackNetworkConfigurations: Record<
     id: 'mainnet',
     chainId: '1',
     name: 'Mainnet',
-    egldLabel: 'xEGLD',
+    egldLabel: 'EGLD',
     decimals: '18',
     digits: '4',
     gasPerDataByte: '1500',

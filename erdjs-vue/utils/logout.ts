@@ -4,6 +4,7 @@ import { getIsLoggedIn } from 'erdjs-vue/utils/getIsLoggedIn';
 import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo'
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo'
 import { preventRedirects, safeRedirect } from 'erdjs-vue/utils/redirect';
+import { useLedgerStore } from 'erdjs-vue/store/erdjsLedger';
 
 export async function logout(
   callbackUrl?: string,
@@ -26,6 +27,8 @@ export async function logout(
   try {
     const needsCallbackUrl = isWalletProvider && !callbackUrl;
     const url = needsCallbackUrl ? window.location.origin : callbackUrl;
+
+    useLedgerStore().logout();
 
     if (isWalletProvider) {
       useLoginInfoStore().logout();

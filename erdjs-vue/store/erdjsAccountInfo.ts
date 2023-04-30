@@ -70,6 +70,9 @@ export const useAccountStore = defineStore('erdjs-account', {
     getAccount: (state) => {
       return state.accounts[state.address] ? state.accounts[state.address] : emptyAccount;
     },
+    getLedgerAccount: (state) => {
+      return state.ledgerAccount;
+    },
     getWebsocketEvent: (state) => {
       return state.websocketEvent;
     },
@@ -105,6 +108,15 @@ export const useAccountStore = defineStore('erdjs-account', {
         timestamp: Date.now(),
         message: payload
       };
+    },
+    setLedgerAccount(payload: LedgerAccountType | null) {
+      this.ledgerAccount = payload;
+    },
+    updateLedgerAccount(payload: UpdateLedgerAccountPayloadType) {
+      if (this.ledgerAccount != null) {
+        this.ledgerAccount.index = payload.index;
+        this.ledgerAccount.address = payload.address;
+      }
     },
     logout() {
       this.$reset();
