@@ -7,7 +7,6 @@ import { ref } from 'vue';
 import { nativeAuth } from 'erdjs-vue/services/nativeAuth';
 import { getNativeAuthConfig } from 'erdjs-vue/services/nativeAuth/methods';
 import type { OnProviderLoginType } from 'erdjs-vue/types/login.types';
-import { getAddress, getAccount, getLatestNonce } from 'erdjs-vue/utils/account';
 
 const getApiAddress = (
   apiAddress: string,
