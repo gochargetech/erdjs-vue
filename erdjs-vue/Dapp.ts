@@ -61,6 +61,7 @@ export default class Dapp {
   initializeNetworkConfig(options: NetworkType) {
     const store = useDappStore();
     store.updateNetworkConfig(options);
+    store.updateChainId(options.chainId);
   }
 
   setupWatchers() {
