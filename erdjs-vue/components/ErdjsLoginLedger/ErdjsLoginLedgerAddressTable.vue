@@ -13,6 +13,10 @@
                                 <code class="mb-2">
                                     {{ getAddress }}
                                 </code>
+                                <template v-if="getLoginToken">
+                                    <strong>and Auth Token: </strong>
+                                    <code class="mb-2">{{ getLoginToken }}</code>
+                                </template>
                                 <strong>is displayed on your Ledger device screen now.</strong>
                             </div>
                         </template>
@@ -53,6 +57,7 @@
 
 <script>
 import { useLedgerStore } from 'erdjs-vue/store/erdjsLedger';
+import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 
 export default {
     name: 'ErdjsLoginLedgerAddressTable',
@@ -70,6 +75,9 @@ export default {
         },
         getAddress() {
             return useLedgerStore().getSelectedAddress.address;
+        },
+        getLoginToken() {
+            return useLoginInfoStore().getTokenLogin?.loginToken;
         },
         showAddressList() {
             return useLedgerStore().showAddressList;

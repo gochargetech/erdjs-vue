@@ -6,6 +6,7 @@ import { tryAuthenticateWalletUser } from 'erdjs-vue/hooks/login/useWebWalletLog
 import { setExtensionProvider } from 'erdjs-vue/hooks/login/useExtensionLogin'
 import { useWalletConnectLogin } from 'erdjs-vue/hooks/login/useWalletConnectLogin';
 import { useWalletConnectV2Login } from 'erdjs-vue/hooks/login/useWalletConnectV2Login';
+import { setExternalProviderAsAccountProvider } from 'erdjs-vue/providers/accountProvider';
 
 export async function fetchAccount(address: string, isLoggedIn: boolean) {
   // dispatch(setIsAccountLoading(true));
@@ -69,7 +70,7 @@ export function initializeProvider(loginMethod: LoginMethodsEnum | null) {
     }
 
     case LoginMethodsEnum.extra: {
-      console.log('extra');
+      setExternalProviderAsAccountProvider();
       break;
     }
 

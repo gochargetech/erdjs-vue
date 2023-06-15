@@ -15,12 +15,28 @@ export type ProvidersType =
 
 let accountProvider: ProvidersType = emptyProvider;
 
+let externalProvider: IDappProvider | null = null;
+
 export function setAccountProvider<TProvider extends ProvidersType>(
   provider: TProvider
 ) {
   accountProvider = provider;
 }
 
+export function setExternalProvider(provider: IDappProvider) {
+  externalProvider = provider;
+}
+
+export function setExternalProviderAsAccountProvider() {
+  if (externalProvider != null) {
+    accountProvider = externalProvider;
+  }
+}
+
 export function getAccountProvider(): ProvidersType {
   return (accountProvider as ProvidersType) || emptyProvider;
+}
+
+export function getExternalProvider() {
+  return externalProvider;
 }

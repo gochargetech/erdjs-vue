@@ -40,10 +40,10 @@ export async function logout(
         provider.logout({ callbackUrl: url });
       });
     } else {
-      await provider.logout();
-
       useLoginInfoStore().logout();
       useAccountStore().logout();
+
+      await provider.logout();
 
       redirectToCallbackUrl(callbackUrl, onRedirect, isWalletProvider);
     }

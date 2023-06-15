@@ -8,6 +8,8 @@
 <script>
 import { ErdjsTxModal } from 'erdjs-vue/components/ErdjsTxModal';
 import { ErdjsToasts } from 'erdjs-vue/components/ErdjsToasts';
+import { useWebViewLogin } from 'erdjs-vue/hooks/login/useWebViewLogin';
+import { getWebviewToken } from 'erdjs-vue/utils/account/getWebviewToken';
 
 export default {
     name: 'ErdjsFooter',
@@ -15,6 +17,18 @@ export default {
         ErdjsTxModal,
         ErdjsToasts
     },
+    watch: {
+        webviewToken(newVal) {
+            if (newVal !== '') {
+                useWebViewLogin(newVal);
+            }
+        }
+    },
+    computed: {
+        webviewToken() {
+            return getWebviewToken();
+        },
+    }
 };
 </script>
 

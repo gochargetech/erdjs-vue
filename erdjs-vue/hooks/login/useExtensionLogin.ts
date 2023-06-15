@@ -13,6 +13,7 @@ import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 import { optionalRedirect } from 'erdjs-vue/utils/internal';
 import { getAddress } from 'erdjs-vue/utils/account';
+import { useLoginService } from './useLoginService';
 
 export type UseExtensionLoginReturnType = [
   InitiateLoginFunctionType,
@@ -22,9 +23,12 @@ export type UseExtensionLoginReturnType = [
 export const useExtensionLogin = ({
   callbackRoute,
   token,
+  nativeAuth,
   onLoginRedirect
 }: OnProviderLoginType): UseExtensionLoginReturnType => {
   const isLoggedIn = getIsLoggedIn();
+  const hasNativeAuth = Boolean(nativeAuth);
+  const loginService = useLoginService(nativeAuth);
   let errorMessage = '';
   const isLoading = false;
 
@@ -48,6 +52,21 @@ export const useExtensionLogin = ({
       const callbackUrl: string = encodeURIComponent(
         `${window.location.origin}${callbackRoute ?? window.location.pathname}`
       );
+
+      if (hasNativeAuth && !token) {
+        token = await loginService.getNativeAuthLoginToken();
+
+        // Fetching block failed
+        if (!token) {
+          console.warn('Fetching block failed. Login cancelled.');
+          return;
+        }
+      }
+
+      if (token) {
+        loginService.setLoginToken(token);
+      }
+
       const providerLoginData = {
         callbackUrl,
         ...(token && { token })
@@ -61,13 +80,14 @@ export const useExtensionLogin = ({
       if (!address) {
         // TODO: implement error message
         console.warn('Login cancelled.');
+        alert('Login cancelled. Please try again.');
         return;
       }
 
-      if (signature) {
-        useLoginInfoStore().setTokenLogin({
-          loginToken: String(token),
-          signature
+      if (signature && token) {
+        loginService.setTokenLoginInfo({
+          signature,
+          address
         });
       }
 
@@ -82,8 +102,6 @@ export const useExtensionLogin = ({
     } catch (error) {
       console.error('error loging in', error);
       errorMessage = 'error logging in' + (error as any).message;
-    } finally {
-      // setIsLoading(false);
     }
   }
   // const loginFailed = Boolean(error);

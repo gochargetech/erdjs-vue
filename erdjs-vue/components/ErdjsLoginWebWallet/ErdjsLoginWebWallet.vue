@@ -16,6 +16,7 @@
 <script>
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { useWebWalletLogin } from 'erdjs-vue/hooks/login/useWebWalletLogin';
+import { useAppConfigStore } from 'erdjs-vue/store/erdjsAppConfig';
 
 export default {
     name: 'ErdjsLoginWebWallet',
@@ -37,9 +38,8 @@ export default {
     },
     methods: {
         login() {
-            const [onInitiateLogin] = useWebWalletLogin({
-                callbackRoute: '/login'
-            });
+            const loginConfig = useAppConfigStore().getWebWalletLogin;
+            const [onInitiateLogin] = useWebWalletLogin(loginConfig);
             onInitiateLogin();
         }
     }

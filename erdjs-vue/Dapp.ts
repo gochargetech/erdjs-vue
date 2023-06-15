@@ -12,6 +12,7 @@ import { useNotificationsStore } from 'erdjs-vue/store/erdjsNotifications';
 import { useNetworkProviderStore } from 'erdjs-vue/store/erdjsProvider';
 import { useTransactionsStore } from 'erdjs-vue/store/erdjsTransactions';
 import { useTransactionsInfoStore } from 'erdjs-vue/store/erdjsTransactionsInfo';
+
 import {
   fetchAccount,
   initializeProvider
@@ -21,6 +22,8 @@ import { ref, watch } from "vue";
 import { sendSignedTransactions } from 'erdjs-vue/apiCalls/transactions';
 import { useToastsStore } from './store/erdjsToasts';
 import { logout as logoutAction } from 'erdjs-vue/utils/logout'
+import { useWebViewLogin } from 'erdjs-vue/hooks/login/useWebViewLogin'
+import { type AppConfig, setAppConfig } from 'erdjs-vue/utils/app/appConfig';
 
 export interface DappType {
   init: void,
@@ -33,8 +36,9 @@ export interface DappType {
 export default class Dapp {
   private environment: 'testnet' | 'mainnet' | 'devnet' | EnvironmentsEnum;
   private customNetworkConfig: {};
+  private appConfiguration: AppConfig;
 
-  constructor(environment: EnvironmentsEnum, customNetworkConfig = {},) {
+  constructor(environment: EnvironmentsEnum, customNetworkConfig = {}, appConfig: AppConfig) {
     if (!environment) {
       //throw if the user tries to initialize the app without a valid environment.
       throw new Error('missing environment flag');
@@ -43,6 +47,9 @@ export default class Dapp {
     this.environment = environment;
     this.customNetworkConfig = {
       ...customNetworkConfig
+    }
+    this.appConfiguration = {
+      ...appConfig
     }
   }
 
@@ -56,6 +63,9 @@ export default class Dapp {
 
     this.initializeNetworkConfig(localConfig)
     this.setupWatchers()
+    setAppConfig(this.appConfiguration);
+
+    useWebViewLogin();
   }
 
   initializeNetworkConfig(options: NetworkType) {

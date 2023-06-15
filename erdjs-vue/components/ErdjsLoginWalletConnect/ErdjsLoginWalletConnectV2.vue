@@ -51,6 +51,7 @@ import { LoginMethodsEnum } from './../../types/index';
 import { useWalletConnectV2Login } from './../../hooks/login/useWalletConnectV2Login';
 import QRCode from 'qrcode';
 import type { PairingTypes } from '@multiversx/sdk-wallet-connect-provider';
+import { useAppConfigStore } from 'erdjs-vue/store/erdjsAppConfig';
 
 export default defineComponent({
     mounted() { 
@@ -63,6 +64,7 @@ export default defineComponent({
         const errorMessage = ref<string>('');
         const qrCodeSvg = ref<string>('');
         const topicLoading = ref<string>('');
+        const loginConfig = useAppConfigStore().getWalletConnectV2Login;
 
         const [
             onInitiateLogin,
@@ -74,9 +76,7 @@ export default defineComponent({
                 connectExisting,
                 removeExistingPairing,
             },
-        ] = useWalletConnectV2Login({
-            logoutRoute: '/login'
-        });
+        ] = useWalletConnectV2Login(loginConfig);
         if (error) {
             errorMessage.value = error;
         }

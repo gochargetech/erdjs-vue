@@ -25,7 +25,6 @@ npm install erdjs-vue
 ```
 
 ### Using with vue3
-
 ```sh
 import { erdjsVue } from 'erdjs-vue';
 
@@ -33,12 +32,29 @@ import { erdjsVue } from 'erdjs-vue';
 const app = createApp(App)
 
 // Init erdjs-vue.
-const erdjs = erdjsVue({
+// Options
+const erdjsOptions = {
   loadCss: false,
   chain: 'devnet',
-},{
+};
+
+// Network config.
+const customNetworkConfig = {
   walletConnectV2ProjectId: import.meta.env.VITE_VUE_APP_WC_PROJECT_ID || ''
-});
+};
+
+// App config like webview provider, callbackRoute, logoutRoute, etc.
+const appConfig = {
+  shouldUseWebViewProvider: true,
+  extensionLogin: {
+    nativeAuth: true
+  },
+  ledgerLogin: {
+    nativeAuth: true
+  }
+};
+
+const erdjs = erdjsVue(erdjsOptions, customNetworkConfig, appConfig);
 app.use(erdjs)
 
 // Mount app.
@@ -61,13 +77,7 @@ pinia.use(piniaPluginPersistedstate);
 app.use(pinia);
 
 // Init erdjs-vue.
-const erdjs = erdjsVue({
-  loadCss: false,
-  chain: 'devnet',
-  piniaInstance: pinia,
-},{
-  walletConnectV2ProjectId: import.meta.env.VITE_VUE_APP_WC_PROJECT_ID || ''
-});
+const erdjs = erdjsVue(erdjsOptions, customNetworkConfig, appConfig);
 app.use(erdjs)
 
 // Mount app.

@@ -58,7 +58,7 @@ export function useLedgerLogin({
 }: UseLedgerLoginPropsType): LedgerLoginHookReturnType {
   const ledgerAccount = useAccountStore().getLedgerAccount;
   const isLoggedIn = getIsLoggedIn();
-  const hasNativeAuth = nativeAuth != null;
+  const hasNativeAuth = Boolean(nativeAuth);
   const loginService = useLoginService(nativeAuth);
   let token = tokenToSign;
 
@@ -121,6 +121,7 @@ export function useLedgerLogin({
       // Fetching block failed
       if (!token) {
         console.warn('Fetching block failed. Login cancelled.');
+        alert('Login cancelled. Please try again.');
         return;
       }
     }
