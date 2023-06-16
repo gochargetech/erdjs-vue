@@ -30,11 +30,6 @@
             <template v-if="(loginMethod === getLoginMethods().wallet)">
                 <ErdjsLoginWebWallet :selected-mode="loginMethod" @hide-login-tab="(loginMethod = getLoginMethods().none)" />
             </template>
-            <template v-if="(loginMethod === getLoginMethods().walletconnect)">
-                <ErdjsLoginWalletConnect :selected-mode="loginMethod"
-                    @hide-login-tab="(loginMethod = getLoginMethods().none)" 
-                    @change-login-tab="(tab) => loginMethod = tab" />
-            </template>
             <template v-if="(loginMethod === getLoginMethods().walletconnectv2)">
                 <ErdjsLoginWalletConnectV2 :selected-mode="loginMethod"
                     @hide-login-tab="(loginMethod = getLoginMethods().none)"
@@ -60,7 +55,6 @@
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { ErdjsLoginExtension } from 'erdjs-vue/components/ErdjsLoginExtension'
 import { ErdjsLoginWebWallet } from 'erdjs-vue/components/ErdjsLoginWebWallet'
-import { ErdjsLoginWalletConnect } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
 import { ErdjsLoginWalletConnectV2 } from 'erdjs-vue/components/ErdjsLoginWalletConnect'
 import { ErdjsLoginLedger } from 'erdjs-vue/components/ErdjsLoginLedger'
 import { logout } from 'erdjs-vue/utils/logout'
@@ -71,7 +65,6 @@ export default {
     components: {
         ErdjsLoginExtension,
         ErdjsLoginWebWallet,
-        ErdjsLoginWalletConnect,
         ErdjsLoginWalletConnectV2,
         ErdjsLoginLedger
     },

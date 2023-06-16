@@ -1,7 +1,7 @@
 <template>
     <div class="erdjs-vue--login d-flex flex-column flex-grow-1">
         <div class="d-flex flex-fill align-items-center">
-            <div class="m-auto">
+            <div class="m-auto mw-100">
                 <div class="card shadow-sm rounded p-4 border-0 text-center">
                     <div class="card-body py-4 px-2 px-sm-2 mx-lg-4">
                         <ErdjsLoginCard />

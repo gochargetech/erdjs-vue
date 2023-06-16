@@ -23,6 +23,7 @@
 import { useLedgerLogin } from 'erdjs-vue/hooks/login/useLedgerLogin';
 import { useLedgerStore } from 'erdjs-vue/store/erdjsLedger';
 import ErdjsLoginLedgerAddressTable from './ErdjsLoginLedgerAddressTable.vue'
+import { useAppConfigStore } from 'erdjs-vue/store/erdjsAppConfig';
 
 export default {
     name: 'ErdjsLoginLedger',
@@ -50,11 +51,10 @@ export default {
     },
     methods: {
         login() {
+            const loginConfig = useAppConfigStore().getLedgerLogin;
             const [
                 onStartLogin,
-            ] = useLedgerLogin({
-                callbackRoute: '/',
-            });
+            ] = useLedgerLogin(loginConfig);
 
             onStartLogin();
         }

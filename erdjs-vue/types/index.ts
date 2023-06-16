@@ -1,6 +1,7 @@
 export interface TokenLoginType {
   loginToken: string;
   signature?: string;
+  nativeAuthToken?: string;
 }
 
 export * from './account.types';

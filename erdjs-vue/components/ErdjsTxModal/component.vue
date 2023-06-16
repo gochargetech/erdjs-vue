@@ -1,6 +1,6 @@
 <template>
     <div v-if="txToSign">
-        <div class="modal fade show" tabindex="-1">
+        <div class="modal fade show" :style="{display: 'block'}" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">

@@ -7,6 +7,7 @@ import type DappType from './Dapp'
 import type { EnvironmentsEnum } from './types'
 import * as components from './components'
 import { useTransactionsTracker } from 'erdjs-vue/hooks/transactions/useTransactionsTracker';
+import { emptyAppConfig, type AppConfig } from 'erdjs-vue/utils/app/appConfig';
 
 import "erdjs-vue/assets/scss/styles.scss";
 
@@ -38,7 +39,8 @@ const defaultCustomNetworkConfig: ErdjsVueCustomConfig = {
 
 export function erdjsVue(
   options: ErdjsVueOptions = defaultOptions,
-  customNetworkConfig: ErdjsVueCustomConfig = defaultCustomNetworkConfig
+  customNetworkConfig: ErdjsVueCustomConfig = defaultCustomNetworkConfig,
+  appConfig: AppConfig = emptyAppConfig
 ): ErdjsVue {
   const erdjs: ErdjsVue = {
     dapp: {} as DappType,
@@ -51,7 +53,7 @@ export function erdjsVue(
         app.use(pinia);
       }
 
-      this.dapp = new Dapp(options.chain as EnvironmentsEnum, customNetworkConfig);
+      this.dapp = new Dapp(options.chain as EnvironmentsEnum, customNetworkConfig, appConfig);
       this.dapp.init();
 
       // Auto import all components

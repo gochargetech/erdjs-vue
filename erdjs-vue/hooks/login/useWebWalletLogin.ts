@@ -13,6 +13,8 @@ import { setAccountProvider } from 'erdjs-vue/providers/accountProvider';
 import { getAddress, getAccount, getLatestNonce } from 'erdjs-vue/utils/account';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
+import { useLoginService } from './useLoginService';
+import { sanitizeCallbackUrl } from 'erdjs-vue/utils/sanitizeCallbackUrl';
 
 export interface UseWebWalletLoginPropsType
   extends Omit<OnProviderLoginType, 'onLoginRedirect'> {
@@ -26,12 +28,16 @@ export type UseWebWalletLoginReturnType = [
 
 export const useWebWalletLogin = ({
   callbackRoute,
-  token,
+  token: tokenToSign,
+  nativeAuth,
   redirectDelayMilliseconds = 100
 }: UseWebWalletLoginPropsType): UseWebWalletLoginReturnType => {
   const isLoggedIn = getIsLoggedIn();
   let errorMessage = '';
   const isLoading = false;
+  const hasNativeAuth = Boolean(nativeAuth);
+  const loginService = useLoginService(nativeAuth);
+  let token = tokenToSign;
 
   async function initiateLogin() {
     if (isLoggedIn) {
@@ -49,14 +55,35 @@ export const useWebWalletLogin = ({
         expires: expires
       };
 
-      useLoginInfoStore().setWalletLogin(walletLoginData);
-      useLoginInfoStore().setLoginMethod(LoginMethodsEnum.wallet)
-      if (token) {
-        useLoginInfoStore().setTokenLogin({ loginToken: token });
+      if (hasNativeAuth && !token) {
+        token = await loginService.getNativeAuthLoginToken();
+        // Fetching block failed
+        if (!token) {
+          console.warn('Login cancelled.');
+          return;
+        }
       }
-      const callbackUrl: string = encodeURIComponent(
-        `${window.location.origin}${callbackRoute}`
-      );
+
+      if (token) {
+        loginService.setLoginToken(token);
+      }
+
+      const targetUrl = window?.location
+        ? `${window.location.origin}${callbackRoute}`
+        : `${callbackRoute}`;
+      const params = new URLSearchParams(document.location.search);
+
+      // skip login when an address param is prefilled in URL
+      const skipLogin = params.get('address');
+
+      if (!skipLogin) {
+        useLoginInfoStore().setWalletLogin(walletLoginData);
+        useLoginInfoStore().setLoginMethod(LoginMethodsEnum.wallet)
+      }
+
+      const sanitizedCallbackUrl = sanitizeCallbackUrl(targetUrl);
+      const callbackUrl = encodeURIComponent(sanitizedCallbackUrl);
+
       const loginData = {
         callbackUrl: callbackUrl,
         ...(token && { token }),
@@ -66,9 +93,8 @@ export const useWebWalletLogin = ({
       await provider.login(loginData);
     } catch (error) {
       console.error('error loging in', error);
-      errorMessage = 'error logging in' + (error as any).message;
-    } finally {
-      // setIsLoading(false);
+      errorMessage = 'error logging in: ' + (error as any).message;
+      alert(errorMessage);
     }
   }
   // const loginFailed = Boolean(error);

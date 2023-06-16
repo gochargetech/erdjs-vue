@@ -22,6 +22,7 @@
 <script>
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { useExtensionLogin } from 'erdjs-vue/hooks/login/useExtensionLogin';
+import { useAppConfigStore } from 'erdjs-vue/store/erdjsAppConfig';
 
 export default {
     name: 'ErdjsLoginExtension',
@@ -56,9 +57,8 @@ export default {
             return navigator.userAgent.indexOf('Firefox') != -1;
         },
         login() {
-            const [onInitiateLogin] = useExtensionLogin({
-                callbackRoute: ''
-            });
+            const loginConfig = useAppConfigStore().getExtensionLogin;
+            const [onInitiateLogin] = useExtensionLogin(loginConfig);
             onInitiateLogin();
         }
     }

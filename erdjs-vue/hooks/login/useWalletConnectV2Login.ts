@@ -19,6 +19,7 @@ import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 import { optionalRedirect } from 'erdjs-vue/utils/internal';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
+import { useLoginService } from './useLoginService';
 
 import { ref, watch } from 'vue';
 import type { Ref } from 'vue';
@@ -60,9 +61,12 @@ export const useWalletConnectV2Login = ({
   logoutRoute,
   callbackRoute,
   token: tokenToSign,
+  nativeAuth,
   onLoginRedirect
 }: InitWalletConnectV2Type): WalletConnectV2LoginHookReturnType => {
-  const token = tokenToSign;
+  const hasNativeAuth = Boolean(nativeAuth);
+  const loginService = useLoginService(nativeAuth);
+  let token = tokenToSign;
 
   const isLoading = ref<boolean>(true);
   const wcUri = ref<string>('');
@@ -132,18 +136,16 @@ export const useWalletConnectV2Login = ({
       const address = await currentProvider.getAddress();
       if (!address) {
         console.warn('Login cancelled.');
+        alert('Login cancelled. Please try again.');
         return;
       }
 
       // @ts-ignore
       const signature = await currentProvider.getSignature();
-      const hasSignature = Boolean(signature);
-
       const loginActionData = {
         address: address,
         loginMethod: LoginMethodsEnum.walletconnectv2
       };
-      useAccountStore().setLogin(loginActionData);
 
       const loginData = {
         logoutRoute: logoutRoute,
@@ -151,12 +153,13 @@ export const useWalletConnectV2Login = ({
         callbackRoute: callbackRoute ?? window.location.href
       };
 
-      if (hasSignature) {
-        useLoginInfoStore().setWalletConnectV2Login(loginData);
-        useLoginInfoStore().setTokenLoginSignature(signature);
-      } else {
-        useLoginInfoStore().setWalletConnectV2Login(loginData);
+      useLoginInfoStore().setWalletConnectV2Login(loginData);
+
+      if (signature) {
+        loginService.setTokenLoginInfo({ signature, address });
       }
+
+      useAccountStore().setLogin(loginActionData);
 
       optionalRedirect({
         callbackRoute,
@@ -187,6 +190,20 @@ export const useWalletConnectV2Login = ({
 
       wcUri.value = uri;
       useNetworkProviderStore().setWalletConnectUri(wcUri.value);
+
+      if (hasNativeAuth && !token) {
+        token = await loginService.getNativeAuthLoginToken();
+        // Fetching block failed
+        if (!token) {
+          console.warn('Fetching block failed. Login cancelled.');
+          alert('Login cancelled (Fetching block failed). Please try again.');
+          return;
+        }
+      }
+
+      if (token) {
+        loginService.setLoginToken(token);
+      }
 
       try {
         // @ts-ignore
@@ -268,6 +285,20 @@ export const useWalletConnectV2Login = ({
       const { approval } = await useNetworkProviderStore().getCurrent?.connect({
         topic: pairing.topic
       });
+
+      if (hasNativeAuth && !token) {
+        token = await loginService.getNativeAuthLoginToken();
+        // Fetching block failed
+        if (!token) {
+          console.warn('Fetching block failed. Login cancelled.');
+          alert('Login cancelled (Fetching block failed). Please try again.');
+          return;
+        }
+      }
+
+      if (token) {
+        loginService.setLoginToken(token);
+      }
 
       try {
         // @ts-ignore

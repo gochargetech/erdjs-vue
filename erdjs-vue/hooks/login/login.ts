@@ -1,11 +1,10 @@
 import { getAccount } from 'erdjs-vue/utils/account';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
-import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { tryAuthenticateWalletUser } from 'erdjs-vue/hooks/login/useWebWalletLogin'
 import { setExtensionProvider } from 'erdjs-vue/hooks/login/useExtensionLogin'
-import { useWalletConnectLogin } from 'erdjs-vue/hooks/login/useWalletConnectLogin';
 import { useWalletConnectV2Login } from 'erdjs-vue/hooks/login/useWalletConnectV2Login';
+import { setExternalProviderAsAccountProvider } from 'erdjs-vue/providers/accountProvider';
 
 export async function fetchAccount(address: string, isLoggedIn: boolean) {
   // dispatch(setIsAccountLoading(true));
@@ -38,21 +37,6 @@ export function initializeProvider(loginMethod: LoginMethodsEnum | null) {
       break;
     }
 
-    case LoginMethodsEnum.walletconnect: {
-      const walletConnectLogin = useLoginInfoStore().getWalletConnectLogin;
-      const { callbackRoute, logoutRoute } = walletConnectLogin
-        ? walletConnectLogin
-        : { callbackRoute: '', logoutRoute: '' };
-
-      const [initWalletLoginProvider] = useWalletConnectLogin({
-        callbackRoute,
-        logoutRoute
-      });
-
-      initWalletLoginProvider(false);
-      break;
-    }
-
     case LoginMethodsEnum.walletconnectv2: {
       const [initWalletConnectV2LoginProvider] = useWalletConnectV2Login({
         logoutRoute: '/login',
@@ -69,7 +53,7 @@ export function initializeProvider(loginMethod: LoginMethodsEnum | null) {
     }
 
     case LoginMethodsEnum.extra: {
-      console.log('extra');
+      setExternalProviderAsAccountProvider();
       break;
     }
 
