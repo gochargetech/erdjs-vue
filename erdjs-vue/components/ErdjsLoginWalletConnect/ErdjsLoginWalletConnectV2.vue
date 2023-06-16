@@ -39,9 +39,6 @@
         <div class="back-button my-3">
             <button @click.prevent="$emit('hide-login-tab')" class="btn btn-secondary">Back</button>
         </div>
-        <div class="mt-3 small">
-            <a href="#" @click.prevent="$emit('change-login-tab', LoginMethodsEnum.walletconnect)">Unable to login? Use the legacy version.</a>
-        </div>
     </div>
 </template>
 
