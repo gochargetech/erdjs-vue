@@ -1,6 +1,5 @@
 import { getAccount } from 'erdjs-vue/utils/account';
 import { useAccountStore } from 'erdjs-vue/store/erdjsAccountInfo';
-import { useLoginInfoStore } from 'erdjs-vue/store/erdjsLoginInfo';
 import { LoginMethodsEnum } from 'erdjs-vue/types/index'
 import { tryAuthenticateWalletUser } from 'erdjs-vue/hooks/login/useWebWalletLogin'
 import { setExtensionProvider } from 'erdjs-vue/hooks/login/useExtensionLogin'
