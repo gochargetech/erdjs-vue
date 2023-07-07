@@ -24,6 +24,7 @@ import { useToastsStore } from './store/erdjsToasts';
 import { logout as logoutAction } from 'erdjs-vue/utils/logout'
 import { useWebViewLogin } from 'erdjs-vue/hooks/login/useWebViewLogin'
 import { type AppConfig, setAppConfig } from 'erdjs-vue/utils/app/appConfig';
+import { storeToRefs } from 'pinia';
 
 export interface DappType {
   init: void,
@@ -75,24 +76,20 @@ export default class Dapp {
   }
 
   setupWatchers() {
-    const address = useAccountStore().getAddress;
-    const addressRef = ref(address);
+    const { getAddress } = storeToRefs(useAccountStore());
 
-    const isLoggedIn = useLoginInfoStore().isLoggedIn;
-    const isLoggedInRef = ref(isLoggedIn);
+    const { isLoggedIn } = storeToRefs(useLoginInfoStore());
 
-    watch([addressRef, isLoggedInRef], () => {
-      fetchAccount(addressRef.value, isLoggedInRef.value);
+    watch([getAddress, isLoggedIn], () => {
+      fetchAccount(getAddress.value, isLoggedIn.value);
     }, {
       immediate: true
     })
 
-    const loginMethod = useLoginInfoStore().getLoginMethod;
+    const { loginMethod } = storeToRefs(useLoginInfoStore());
 
-    const loginMethodRef = ref(loginMethod);
-
-    watch(loginMethodRef, () => {
-      initializeProvider(loginMethodRef.value);
+    watch(loginMethod, () => {
+      initializeProvider(loginMethod.value);
     }, {
       immediate: true
     })
