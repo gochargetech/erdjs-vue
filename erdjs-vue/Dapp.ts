@@ -18,7 +18,7 @@ import {
   initializeProvider
 } from 'erdjs-vue/hooks/login/login';
 import { transactionSender } from 'erdjs-vue/hooks/transactions/transactionsSender';
-import { ref, watch } from "vue";
+import { watch } from "vue";
 import { sendSignedTransactions } from 'erdjs-vue/apiCalls/transactions';
 import { useToastsStore } from './store/erdjsToasts';
 import { logout as logoutAction } from 'erdjs-vue/utils/logout'
