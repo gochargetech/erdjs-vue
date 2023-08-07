@@ -6,6 +6,7 @@ import type { InitWalletConnectV2Type } from 'erdjs-vue/hooks/login/useWalletCon
 
 export interface AppConfig {
   shouldUseWebViewProvider: boolean,
+  withGuardianInfo: boolean,
   extensionLogin: OnProviderLoginType,
   ledgerLogin: OnProviderLoginType,
   walletConnectV2Login: InitWalletConnectV2Type,
@@ -14,6 +15,7 @@ export interface AppConfig {
 
 export const emptyAppConfig: AppConfig = {
   shouldUseWebViewProvider: true,
+  withGuardianInfo: true,
   extensionLogin: {
     callbackRoute: '/'
   },
@@ -35,6 +37,7 @@ export const setAppConfig = (appConfig: AppConfig) => {
   }
 
   useAppConfigStore().setShouldUseWebViewProvider(appConfig?.shouldUseWebViewProvider);
+  useAppConfigStore().setWithGuardianInfo(appConfig?.withGuardianInfo);
 
   // Make sure to fallback to empty state to avoid undefined varioable errors
   useAppConfigStore().setExtensionLogin({

@@ -1,4 +1,8 @@
-import type { Transaction } from '@multiversx/sdk-core';
+import {
+  type Transaction,
+  TransactionOptions,
+  TransactionVersion
+} from '@multiversx/sdk-core';
 
 import { ExtensionProvider } from '@multiversx/sdk-extension-provider';
 import { ref, watch } from "vue";
@@ -49,10 +53,12 @@ const setTransactionNonces = (
 
 export const useSignTransactions = () => {
   const savedCallback = ref('/');
-  const address = useAccountStore().getAddress;
+  const account = useAccountStore();
+  const { address, isGuarded } = account;
   const { provider } = useGetAccountProvider();
   const providerType = getProviderType(provider);
   const isSigningRef = ref(false);
+
 
   const signTransactionsCancelMessage = useTransactionsStore().getSignTransactionsCancelMessage;
 
@@ -106,8 +112,19 @@ export const useSignTransactions = () => {
     const callbackUrl = `${window.location.origin}${callbackRoute}`;
     const buildedCallbackUrl = builtCallbackUrl({ callbackUrl, urlParams });
 
+    const txsToSign = isGuarded
+      ? transactions.map((transaction) => {
+        transaction.setVersion(TransactionVersion.withTxOptions());
+        transaction.setOptions(
+          TransactionOptions.withOptions({ guarded: true })
+        );
+
+        return transaction;
+      })
+      : transactions
+
     // @ts-ignore
-    provider.signTransactions(transactions, {
+    provider.signTransactions(txsToSign, {
       callbackUrl: encodeURIComponent(buildedCallbackUrl)
     });
   };

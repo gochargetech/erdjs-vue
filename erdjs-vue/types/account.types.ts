@@ -28,6 +28,8 @@ export interface AccountType {
   isPayable?: boolean;
   isPayableBySmartContract?: boolean;
   assets?: AssetType;
+  isGuarded?: boolean;
+  activeGuardianAddress?: string | null;
 }
 
 export interface ScamInfoType {

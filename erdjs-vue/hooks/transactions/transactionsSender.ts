@@ -1,5 +1,4 @@
 import { ref, watch } from 'vue';
-import { Address } from '@multiversx/sdk-core';
 import type { Transaction } from '@multiversx/sdk-core/out';
 import { Signature } from '@multiversx/sdk-core/out/signature';
 
@@ -75,11 +74,10 @@ export const transactionSender = ({
         }
         sendingRef.value = true;
         const transactionsToSend = transactions.map((tx) => {
-          const address = new Address(tx.sender);
           const transactionObject = newTransaction(tx);
           const signature = new Signature(tx.signature);
 
-          transactionObject.applySignature(signature, address);
+          transactionObject.applySignature(signature);
           return transactionObject;
         });
         const responseHashes = await sendSignedTransactionsAsync(
