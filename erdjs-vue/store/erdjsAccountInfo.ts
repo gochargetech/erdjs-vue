@@ -29,6 +29,8 @@ export interface AccountInfoSliceType {
     message: string;
   } | null;
   accountLoadingError: string | null;
+  isGuarded: boolean;
+  activeGuardianAddress: string | null;
 }
 
 export const emptyAccount: AccountType = {
@@ -37,7 +39,8 @@ export const emptyAccount: AccountType = {
   nonce: 0,
   txCount: 0,
   scrCount: 0,
-  claimableRewards: ZERO
+  claimableRewards: ZERO,
+  isGuarded: false
 };
 
 const initialState: AccountInfoSliceType = {
@@ -48,7 +51,9 @@ const initialState: AccountInfoSliceType = {
   publicKey: '',
   walletConnectAccount: null,
   isAccountLoading: true,
-  accountLoadingError: null
+  accountLoadingError: null,
+  isGuarded: false,
+  activeGuardianAddress: null
 };
 
 
@@ -96,6 +101,10 @@ export const useAccountStore = defineStore('erdjs-account', {
       };
       this.isAccountLoading = false;
       this.accountLoadingError = null;
+      this.isGuarded = payload?.isGuarded ?? false;
+      if (this.isGuarded) {
+        this.activeGuardianAddress = payload?.activeGuardianAddress ?? null;
+      }
     },
     setAccountNonce(payload: number) {
       this.accounts[this.address].nonce = payload;

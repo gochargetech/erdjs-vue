@@ -5,22 +5,6 @@ import type {
 } from 'erdjs-vue/types';
 import { emptyAppConfig } from 'erdjs-vue/utils/app/appConfig';
 
-// export interface AppConfigStateType {
-//   extensionLogin: OnProviderLoginType,
-//   ledgerLogin: OnProviderLoginType,
-//   walletConnectV2Login: InitWalletConnectV2Type,
-//   webWalletLogin: OnProviderLoginType,
-//   shouldUseWebViewProvider: boolean,
-// }
-
-// const initialState: AppConfigStateType = {
-//   extensionLogin: undefined,
-//   ledgerLogin: undefined,
-//   walletConnectV2Login: undefined,
-//   webWalletLogin: undefined,
-//   shouldUseWebViewProvider: false,
-// };
-
 export const useAppConfigStore = defineStore('erdjs-app-config', {
   state: () => {
     return { ...emptyAppConfig }
@@ -42,6 +26,9 @@ export const useAppConfigStore = defineStore('erdjs-app-config', {
     getShouldUseWebViewProvider: (state) => {
       return state.shouldUseWebViewProvider;
     },
+    getWithGuardianInfo: (state) => {
+      return state.withGuardianInfo;
+    },
   },
   actions: {
     setExtensionLogin(payload: OnProviderLoginType) {
@@ -58,6 +45,9 @@ export const useAppConfigStore = defineStore('erdjs-app-config', {
     },
     setShouldUseWebViewProvider(payload: boolean) {
       this.shouldUseWebViewProvider = Boolean(payload);
+    },
+    setWithGuardianInfo(payload: boolean) {
+      this.withGuardianInfo = Boolean(payload);
     },
   },
 })

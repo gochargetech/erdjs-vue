@@ -1,5 +1,10 @@
 import { ref, watch } from "vue";
-import type { Transaction } from '@multiversx/sdk-core';
+import {
+  type Transaction,
+  Address,
+  TransactionOptions,
+  TransactionVersion
+} from '@multiversx/sdk-core';
 
 import { useParseMultiEsdtTransferData } from 'erdjs-vue/hooks/transactions/useParseMultiEsdtTransferData';
 import type {
@@ -12,6 +17,7 @@ import { isTokenTransfer } from 'erdjs-vue/utils/transactions/isTokenTransfer';
 
 export interface UseSignMultipleTransactionsPropsType {
   egldLabel: string;
+  activeGuardianAddress: string | null | undefined;
   address: string;
   verifyReceiverScam?: boolean;
   isLedger?: boolean;
@@ -52,6 +58,7 @@ export function useSignMultipleTransactions({
   isLedger = false,
   transactionsToSign,
   egldLabel,
+  activeGuardianAddress,
   address,
   onCancel,
   onSignTransaction,
@@ -68,7 +75,22 @@ export function useSignMultipleTransactions({
   const {
     getTxInfoByDataField,
     allTransactions
-  } = useParseMultiEsdtTransferData({ transactions: transactionsToSign });
+  } = useParseMultiEsdtTransferData({
+    transactions: activeGuardianAddress
+      ? transactionsToSign?.map((transaction) => {
+        alert(activeGuardianAddress);
+        transaction.setSender(Address.fromBech32(address));
+        transaction.setVersion(TransactionVersion.withTxOptions());
+        transaction.setGuardian(Address.fromBech32(activeGuardianAddress));
+        const options = {
+          guarded: true,
+          ...(isLedger ? { hashSign: true } : {})
+        };
+        transaction.setOptions(TransactionOptions.withOptions(options));
+        return transaction;
+      })
+      : transactionsToSign
+  });
 
   const isLastTransaction = currentStep.value === allTransactions.length - 1;
 
