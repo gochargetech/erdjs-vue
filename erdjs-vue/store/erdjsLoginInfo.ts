@@ -26,6 +26,7 @@ export interface LoginInfoStateType {
   walletLogin: LoginInfoType | null;
   extensionLogin: LoginInfoType | null;
   isLoginSessionInvalid: boolean;
+  logoutRoute?: string;
 }
 
 const initialState: LoginInfoStateType = {
@@ -64,6 +65,9 @@ export const useLoginInfoStore = defineStore('erdjs-login-info', {
     },
     isLoggedIn: (state) => {
       return state.loginMethod != LoginMethodsEnum.none && Boolean(useAccountStore().getAddress)
+    },
+    getLogoutRoute: (state) => {
+      return state.logoutRoute;
     }
   },
   actions: {
@@ -93,6 +97,9 @@ export const useLoginInfoStore = defineStore('erdjs-login-info', {
     setLedgerLogin(payload: LedgerLoginType) {
       this.loginMethod = LoginMethodsEnum.ledger;
       this.ledgerLogin = payload;
+    },
+    setLogoutRoute(payload: string | undefined) {
+      this.logoutRoute = payload;
     },
     logout() {
       this.$reset();

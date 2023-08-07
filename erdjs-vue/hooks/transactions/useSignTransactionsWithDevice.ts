@@ -17,6 +17,7 @@ import { parseTransactionAfterSigning } from 'erdjs-vue/utils/transactions/parse
 import { useDappStore } from 'erdjs-vue/store/erdjsDapp';
 import { getShouldMoveTransactionsToSignedState } from './helpers/getShouldMoveTransactionsToSignedState';
 import { useClearTransactionsToSignWithWarning } from './helpers/useClearTransactionsToSignWithWarning';
+import { useGetLedgerProvider } from 'erdjs-vue/hooks/transactions/helpers';
 
 export interface UseSignTransactionsWithDevicePropsType {
   onCancel: () => void;
@@ -48,8 +49,9 @@ export function useSignTransactionsWithDevice({
   const account = useGetAccountInfo();
   // const address = account.address;
   const { address, isGuarded, activeGuardianAddress } = account;
-  const { provider } = useGetAccountProvider();
+  const { provider, providerType } = useGetAccountProvider();
   const clearTransactionsToSignWithWarning = useClearTransactionsToSignWithWarning();
+  const getLedgerProvider = useGetLedgerProvider();
 
   const {
     transactions,
@@ -100,8 +102,12 @@ export function useSignTransactionsWithDevice({
   }
 
   async function handleSignTransaction(transaction: Transaction) {
-    // @ts-ignore
-    return await provider.signTransaction(transaction);
+    const connectedProvider =
+      providerType !== LoginMethodsEnum.ledger
+        ? provider
+        : await getLedgerProvider();
+
+    return await connectedProvider.signTransaction(transaction);
   }
 
   const signMultipleTxReturnValues = useSignMultipleTransactions({
@@ -113,6 +119,7 @@ export function useSignTransactionsWithDevice({
     onGetScamAddressData: verifyReceiverScam ? getScamAddressData : null,
     isLedger: getIsProviderEqualTo(LoginMethodsEnum.ledger),
     onCancel: handleCancel,
+    // @ts-ignore
     onSignTransaction: handleSignTransaction,
     onTransactionsSignError: handleTransactionSignError,
     onTransactionsSignSuccess: handleTransactionsSignSuccess

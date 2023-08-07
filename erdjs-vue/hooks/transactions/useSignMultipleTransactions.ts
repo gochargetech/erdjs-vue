@@ -188,10 +188,8 @@ export function useSignMultipleTransactions({
         return;
       }
       const signature = currentTransaction.transaction.getSignature();
-      if (signature.hex()) {
-        if (!isLastTransaction) {
-          currentStep.value = currentStep.value + 1;
-        }
+      if (signature.toString('hex') && !isLastTransaction) {
+        currentStep.value = currentStep.value + 1;
       } else {
         // currently code doesn't reach here because getSignature throws error if none is found
         sign();

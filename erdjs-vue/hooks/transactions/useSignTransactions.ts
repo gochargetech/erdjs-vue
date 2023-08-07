@@ -54,7 +54,7 @@ const setTransactionNonces = (
 export const useSignTransactions = () => {
   const savedCallback = ref('/');
   const account = useAccountStore();
-  const { address, isGuarded, activeGuardianAddress } = account;
+  const { address, isGuarded } = account;
   const { provider } = useGetAccountProvider();
   const providerType = getProviderType(provider);
   const isSigningRef = ref(false);

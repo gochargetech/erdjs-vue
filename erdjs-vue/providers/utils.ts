@@ -7,7 +7,6 @@ import type {
   // @ts-ignore
   EngineTypes,
 } from '@multiversx/sdk-wallet-connect-provider';
-import { WalletConnectProvider } from '@multiversx/sdk-wallet-connect-provider';
 import { WalletConnectV2Provider } from '@multiversx/sdk-wallet-connect-provider/out/walletConnectV2Provider';
 import { WalletProvider } from '@multiversx/sdk-web-wallet-provider';
 import { LEDGER_CONTRACT_DATA_ENABLED_VALUE } from 'erdjs-vue/constants/index';
@@ -22,8 +21,6 @@ export const getProviderType = <TProvider extends Object>(
   switch (provider?.constructor) {
     case WalletProvider:
       return LoginMethodsEnum.wallet;
-    case WalletConnectProvider:
-      return LoginMethodsEnum.walletconnect;
     case WalletConnectV2Provider:
       return LoginMethodsEnum.walletconnectv2;
     case HWProvider:
