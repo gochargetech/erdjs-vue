@@ -5,7 +5,7 @@
                 <slot name="title"><h4>{{ title }}</h4></slot>
                 <slot name="description"><p class="mb-4">{{ description }}</p></slot>
                 
-                <div class="login-method d-flex flex-column flex-md-row justify-content-center flex-wrap">
+                <div :class="cssClassButtonsWrap">
                     <button 
                         @click.prevent="(loginMethod = getLoginMethods().extension)"
                         class="m-2 btn btn-primary"
@@ -44,8 +44,8 @@
         <template v-if="isLoggedIn">
             <p class="text-center">MultiversX address: <strong>{{ getAddressShort }}</strong></p>
             <div class="d-flex flex-row justify-content-center">
-                <a :href="getExplorerUrl" target="_blank" class="btn btn-outline-secondary mx-2">View in explorer</a>
-                <button @click.prevent="logout()" class="btn btn-outline-secondary mx-2">Logout</button>
+                <a :href="getExplorerUrl" target="_blank" :class="cssClassExplorerButton">View in explorer</a>
+                <button @click.prevent="logout()" :class="cssClassLogoutButton">Logout</button>
             </div>
         </template>
     </div>
@@ -67,6 +67,20 @@ export default {
         ErdjsLoginWebWallet,
         ErdjsLoginWalletConnectV2,
         ErdjsLoginLedger
+    },
+    props: {
+        cssClassButtonsWrap: {
+            type: String,
+            default: 'login-method d-flex flex-column flex-md-row justify-content-center flex-wrap'
+        },
+        cssClassExplorerButton: {
+            type: String,
+            default: 'btn btn-outline-secondary mx-2'
+        },
+        cssClassLogoutButton: {
+            type: String,
+            default: 'btn btn-outline-secondary mx-2'
+        }
     },
     data() {
         return {
