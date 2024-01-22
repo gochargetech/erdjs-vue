@@ -73,7 +73,7 @@ export async function signTransactions({
     transactions: transactionsPayload.map((tx) => {
       const currentGasLimit = tx.getGasLimit().valueOf().toString();
       let gasLimit = Number(calculateGasLimit(tx.getData().valueOf().toString()));
-
+      
       if (tx.getSender().valueOf().toString() !== currentAddress) {
         // @ts-ignore
         tx.sender = new Address(currentAddress);
@@ -84,10 +84,10 @@ export async function signTransactions({
       const receiver = tx.getReceiver().valueOf().toString();
       const txToContract = isContract(receiver);
       if (txToContract) {
-        gasLimit += 5000000;
+        gasLimit += 50000000;
       }
-
-      if (parseInt(currentGasLimit) < gasLimit) {
+      
+      if (Number(currentGasLimit) < gasLimit) {
         tx.setGasLimit(gasLimit as IGasLimit);
       }
       return tx.toPlainObject()

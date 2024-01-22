@@ -32,6 +32,10 @@
                                 <div class="fw-bold">Value</div>
                                 <div class="fw-normal text-break">{{ getTxFormattedValue }} {{ getEgldLabel }}</div>
                             </div>
+                            <div class="mb-3" v-if="getGasValue">
+                                <div class="fw-bold">Gas Limit</div>
+                                <div class="fw-normal text-break">{{ getGasValue }}</div>
+                            </div>
                             <div class="mb-3" v-if="getTxData">
                                 <div class="fw-bold">Data</div>
                                 <div class="tx-data fw-normal border rounded-2 bg-secondary bg-opacity-10 p-2">
@@ -124,6 +128,13 @@ export default {
         getTxValue() {
             if (this.currentTx && this.currentTx.value) {
                 return this.currentTx.value
+            }
+
+            return 0;
+        },
+        getGasValue() {
+            if (this.currentTx && this.currentTx.getGasLimit().valueOf().toString()) {
+                return this.currentTx.getGasLimit().valueOf().toString()
             }
 
             return 0;
