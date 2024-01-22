@@ -71,6 +71,7 @@ export async function signTransactions({
     callbackRoute,
     customTransactionInformation,
     transactions: transactionsPayload.map((tx) => {
+      const currentGasLimit = tx.getGasLimit().valueOf().toString();
       let gasLimit = Number(calculateGasLimit(tx.getData().valueOf().toString()));
 
       if (tx.getSender().valueOf().toString() !== currentAddress) {
@@ -86,7 +87,9 @@ export async function signTransactions({
         gasLimit += 5000000;
       }
 
-      tx.setGasLimit(gasLimit as IGasLimit);
+      if (parseInt(currentGasLimit) < gasLimit) {
+        tx.setGasLimit(gasLimit as IGasLimit);
+      }
       return tx.toPlainObject()
     })
   };

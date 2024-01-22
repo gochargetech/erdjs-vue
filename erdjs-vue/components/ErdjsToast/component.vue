@@ -16,7 +16,7 @@
                         <span class="badge bg-success">&#x2713;</span>
                     </template>
                     <template v-if="getTxStatus === 'fail'">
-                        <span class="badge bg-danger">&#x2713;</span>
+                        <span class="badge bg-danger">x</span>
                     </template>
                     <strong class="mx-2">{{ getTxTitle }}</strong>
                 </div>
