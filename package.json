@@ -1,6 +1,6 @@
 {
     "name": "erdjs-vue",
-    "version": "0.9.19",
+    "version": "0.9.20",
     "private": false,
     "description": "A Vue.js library that holds the core functional logic of a dapp on the MultiversX",
     "keywords": [
@@ -54,13 +54,13 @@
         "vue-router": "^4.1.6"
     },
     "dependencies": {
-        "@multiversx/sdk-core": "12.6.0",
+        "@multiversx/sdk-core": "12.18.0",
         "@multiversx/sdk-extension-provider": "3.0.0",
-        "@multiversx/sdk-hw-provider": "6.3.0",
-        "@multiversx/sdk-network-providers": "1.5.0",
-        "@multiversx/sdk-wallet": "4.2.0",
-        "@multiversx/sdk-wallet-connect-provider": "4.0.3",
-        "@multiversx/sdk-web-wallet-provider": "3.0.0",
+        "@multiversx/sdk-hw-provider": "6.4.0",
+        "@multiversx/sdk-network-providers": "2.2.0",
+        "@multiversx/sdk-wallet": "4.3.0",
+        "@multiversx/sdk-wallet-connect-provider": "4.1.0",
+        "@multiversx/sdk-web-wallet-provider": "3.2.0",
         "anchorme": "2.1.2",
         "axios": "^1.2.0",
         "pinia": "^2.0.27",
