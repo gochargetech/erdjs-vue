@@ -60,7 +60,7 @@ function manageTransaction({
     }
 
     const retriesForThisHash = retries[hash];
-    if (retriesForThisHash > 30) {
+    if (retriesForThisHash > 60) {
       // consider transaction as stuck after 1 minute
       manageTimedOutTransactions(sessionId);
       return;

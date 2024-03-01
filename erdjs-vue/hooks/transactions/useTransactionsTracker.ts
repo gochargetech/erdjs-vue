@@ -24,7 +24,7 @@ export function useTransactionsTracker(props?: TransactionsTrackerType) {
   useRegisterWebsocketListener(onMessage);
 
   watchEffect(() => {
-    const interval = setInterval(onMessage, 1000);
+    const interval = setInterval(onMessage, 2000);
     return () => {
       clearInterval(interval);
     };
